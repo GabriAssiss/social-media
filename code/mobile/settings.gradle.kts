@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "gamers-social-media"
 include(":app")
+ 
