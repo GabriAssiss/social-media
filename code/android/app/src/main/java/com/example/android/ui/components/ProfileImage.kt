@@ -21,7 +21,7 @@ fun ProfileImage(image: Painter, modifier: Modifier = Modifier) {
             .border(
                 width = 2.dp,
                 color = Color.LightGray,
-                shape = CircleShape
+                shape = CircleShape,
             )
             .padding(3.dp)
             .clip(CircleShape)

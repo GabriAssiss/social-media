@@ -46,7 +46,8 @@ fun AppTopNavigation(
     searchResults: List<String>,
 ) {
     Surface(
-        color = Color(GRAY)
+        color = Color(GRAY),
+        shadowElevation = 2.dp,
     ) {
         Column {
             CenterAlignedTopAppBar(

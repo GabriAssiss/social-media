@@ -1,4 +1,9 @@
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -6,9 +11,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
@@ -49,4 +61,43 @@ fun PasswordTextField(modifier: Modifier = Modifier, label : String) {
             }
         }
     )
+}
+
+@Composable
+fun ChatTextField() {
+    var value by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { value = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Mensagem...") },
+            shape = RoundedCornerShape(32.dp),
+            leadingIcon = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.CameraAlt, contentDescription = null)
+                }
+            },
+            trailingIcon = {
+                Row(modifier = Modifier.padding(end = 8.dp)) {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.Mic, contentDescription = null)
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.Image, contentDescription = null)
+                    }
+                }
+            },
+
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray
+            )
+        )
+    }
 }
