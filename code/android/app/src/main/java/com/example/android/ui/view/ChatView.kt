@@ -46,7 +46,6 @@ fun MessageView(modifier: Modifier = Modifier) {
         bottomBar = {ChatTextField()}
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
