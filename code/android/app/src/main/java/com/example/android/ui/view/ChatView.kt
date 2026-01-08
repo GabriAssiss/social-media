@@ -34,7 +34,7 @@ data class Message(
 )
 
 @Composable
-fun MessageView(modifier: Modifier = Modifier) {
+fun ChatView(modifier: Modifier = Modifier) {
     val messages = listOf(
         Message("Olá! Como você está?", isFromMe = false),
         Message("Tudo bem, e você? Viu o novo projeto?", isFromMe = true),
@@ -100,6 +100,6 @@ fun ChatBubble(message: Message) {
 
 @Preview
 @Composable
-fun MessageViewPreview() {
-    MessageView()
+fun ChatViewPreview() {
+    ChatView()
 }
