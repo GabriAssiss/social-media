@@ -8,5 +8,6 @@
     "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true
-  }
+  },
+  "include": ["src/**/*"]
 }

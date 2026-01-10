@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String?  @unique
+  phone         String?
+  name          String   @unique
+  profile_url   String?
+  bio           String?
+  password_hash String
+  created_at    DateTime @default(now())
+  posts         Post[]
+  likes         Like[]
+  following     Follow[] @relation("following")
+  followers     Follow[] @relation("follower")
+}
+
+model Follow {
+  followerId  Int
+  followingId Int
+  created_at  DateTime @default(now())
+
+  follower    User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId]) 
+}
+
+model Post {
+  id         Int         @id @default(autoincrement())
+  caption    String?     @db.VarChar(2200)
+  created_at DateTime    @default(now())
+  author     User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   Int
+  midias     PostMidia[]
+  likes      Like[]
+}
+
+model PostMidia {
+  id            Int       @id @default(autoincrement())
+  type          MediaType
+  midia_url     String
+  thumbnail_url String?   
+  ordem         Int       @default(0) 
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId        Int
+}
+
+model Like {
+  userId  Int
+  postId  Int
+  created_at DateTime @default(now())
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@id([userId, postId]) 
+}
