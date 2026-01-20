@@ -59,6 +59,9 @@ CREATE TABLE "Like" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
 
 -- AddForeignKey
