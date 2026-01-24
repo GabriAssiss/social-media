@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,12 +20,12 @@ enum MediaType {
 
 model User {
   id            Int      @id @default(autoincrement())
-  email         String?  @unique
-  phone         String?  @unique
+  email         String   @unique
+  phone         String   @unique
   name          String   @unique
   profile_url   String?
   bio           String?
-  password_hash String
+  password      String
   created_at    DateTime @default(now())
   posts         Post[]
   likes         Like[]
