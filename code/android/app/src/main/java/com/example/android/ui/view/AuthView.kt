@@ -19,9 +19,14 @@ import com.example.android.ui.components.AppOutlinedButton
 
 
 @Composable
-fun AuthView(modifier: Modifier = Modifier) {
-    val labels = listOf("Email ou Apelido", "Senha")
-    var buttonDescription = "Entrar"
+fun AuthView(
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit = {},
+    onRegisterClick: () -> Unit = {}) {
+    val emailLabel = "Email ou Celular"
+    val passwordLabel = "Senha"
+    val getInLabel = "Entrar"
+    val registerLabel = "Cadastrar"
     val forgotPass = "Esqueci a senha..."
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
@@ -31,9 +36,9 @@ fun AuthView(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AppTextField(
-                    modifier, labels[0],
+                    modifier, emailLabel,
                 )
-                PasswordTextField(modifier, labels[1])
+                PasswordTextField(modifier, passwordLabel)
             }
             Column(
                 modifier = Modifier.fillMaxSize().padding(bottom = 50.dp),
@@ -42,16 +47,13 @@ fun AuthView(modifier: Modifier = Modifier) {
 
             ) {
                 AppOutlinedButton(
-                    onClick = {},
-                    label = buttonDescription
+                    onClick = onLoginClick,
+                    label = getInLabel
                 )
 
-
-                buttonDescription = "Cadastrar"
-
                 AppOutlinedButton(
-                    onClick = {},
-                    label = buttonDescription
+                    onClick = onRegisterClick,
+                    label = registerLabel
                 )
                 Text(forgotPass, color = MaterialTheme.colorScheme.primary)
             }
@@ -62,5 +64,8 @@ fun AuthView(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun LoginViewPreview() {
-    AuthView()
+    AuthView(
+        onLoginClick = {},
+        onRegisterClick = {}
+    )
 }

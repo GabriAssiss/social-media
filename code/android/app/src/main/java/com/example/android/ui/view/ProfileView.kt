@@ -120,6 +120,7 @@ fun Stat(modifier: Modifier = Modifier, status : String, value : String) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentBar(modifier: Modifier = Modifier) {
     val tabs = listOf("Fotos", "Vídeos")

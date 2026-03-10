@@ -21,7 +21,14 @@ import com.example.android.ui.components.AppOutlinedButton
 import com.example.android.ui.components.AppReturnButton
 
 @Composable
-fun RegisterEmailView(modifier: Modifier = Modifier, labels : List<String>) {
+fun RegisterView(
+    modifier: Modifier = Modifier,
+    title: String,
+    fieldLabel: String,
+    buttonLabel: String,
+    onPreviousStepClick: () -> Unit = {},
+    onNextStepClick: () -> Unit = {}
+) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             AppReturnButton(
@@ -33,16 +40,16 @@ fun RegisterEmailView(modifier: Modifier = Modifier, labels : List<String>) {
                 horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                 Text(
-                    text = labels[0],
+                    text = title,
                     fontSize = 20.sp,
                     modifier = Modifier.width(320.dp)
                 )
                 Spacer(modifier = Modifier.padding(top = 60.dp))
-                DinamicTextField(labels[1])
+                DinamicTextField(fieldLabel)
                 Spacer(modifier = Modifier.padding(bottom = 50.dp))
                 AppOutlinedButton(
-                    onClick = {},
-                    label = labels[2]
+                    onClick = onNextStepClick,
+                    label = buttonLabel
                 )
                 Text("Já tenho uma conta")
             }
@@ -67,10 +74,12 @@ fun DinamicTextField(label : String) {
 @Preview
 @Composable
 fun RegisterEmailViewPreview() {
-    val labels = listOf(
-        "Insira o nome pelo qual os usuários o chamarão ",
-        "Username",
-        "Avançar"
-    )
-    RegisterEmailView(modifier = Modifier, labels)
+    val title = "Insira seu nome de usuário."
+    val fieldLabel = "Username"
+    val buttonLabel = "avançar"
+    RegisterView(modifier = Modifier,
+        title,
+        fieldLabel,
+        buttonLabel,
+        onNextStepClick = {})
 }
