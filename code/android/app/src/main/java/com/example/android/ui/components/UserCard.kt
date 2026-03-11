@@ -1,6 +1,7 @@
 package com.example.android.ui.components
 
 import ProfileImage
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,11 +22,13 @@ import androidx.compose.ui.unit.sp
 import com.example.android.R
 
 @Composable
-fun UserCard(modifier: Modifier = Modifier) {
+fun UserCard(modifier: Modifier = Modifier, onChatClick: () -> Unit) {
     val nickname = "Nickname"
     Surface(
         modifier = Modifier.fillMaxWidth()
-            .height(100.dp),
+            .height(100.dp).clickable {
+                onChatClick()
+            },
         ) {
         Row(modifier = Modifier.fillMaxSize().padding(10.dp)) {
             ProfileImage(

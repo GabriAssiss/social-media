@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,7 +24,8 @@ import com.example.android.ui.components.AppOutlinedButton
 fun AuthView(
     modifier: Modifier = Modifier,
     onLoginClick: () -> Unit = {},
-    onRegisterClick: () -> Unit = {}) {
+    onRegisterClick: () -> Unit = {},
+    ) {
     val emailLabel = "Email ou Celular"
     val passwordLabel = "Senha"
     val getInLabel = "Entrar"
@@ -31,7 +34,7 @@ fun AuthView(
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

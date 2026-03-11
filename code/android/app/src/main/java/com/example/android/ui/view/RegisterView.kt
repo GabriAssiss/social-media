@@ -2,6 +2,7 @@ package com.example.android.ui.view
 
 import AppTextField
 import PasswordTextField
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,18 +29,19 @@ fun RegisterView(
     fieldLabel: String,
     buttonLabel: String,
     onPreviousStepClick: () -> Unit = {},
-    onNextStepClick: () -> Unit = {}
+    onNextStepClick: () -> Unit = {},
+    onLoginClick: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             AppReturnButton(
-                onClick = {}
+                onClick = onPreviousStepClick
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            ) {
                 Text(
                     text = title,
                     fontSize = 20.sp,
@@ -51,20 +54,25 @@ fun RegisterView(
                     onClick = onNextStepClick,
                     label = buttonLabel
                 )
-                Text("Já tenho uma conta")
+                Text(
+                    "Já tenho uma conta",
+                    modifier = Modifier.clickable {
+                        onLoginClick()
+                    },
+                    textDecoration = TextDecoration.Underline
+                )
             }
         }
     }
 }
 
 @Composable
-fun DinamicTextField(label : String) {
-    if(label.equals("Senha")) {
+fun DinamicTextField(label: String) {
+    if (label.equals("Senha")) {
         PasswordTextField(
             label = label
         )
-    }
-    else {
+    } else {
         AppTextField(
             label = label
         )
@@ -73,13 +81,17 @@ fun DinamicTextField(label : String) {
 
 @Preview
 @Composable
-fun RegisterEmailViewPreview() {
+fun RegisterViewPreview() {
     val title = "Insira seu nome de usuário."
     val fieldLabel = "Username"
     val buttonLabel = "avançar"
-    RegisterView(modifier = Modifier,
+    RegisterView(
+        modifier = Modifier,
         title,
         fieldLabel,
         buttonLabel,
-        onNextStepClick = {})
+        onPreviousStepClick = {},
+        onNextStepClick = {},
+        onLoginClick = {}
+    )
 }

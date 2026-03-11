@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AddCircle
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.android.R
 import com.example.android.ui.components.AppTopNavigation
 
@@ -47,7 +50,10 @@ const val GRAY = 0xFFD1D1D1;
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileView(modifier: Modifier = Modifier) {
+fun ProfileView(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
 
     val textFieldState = rememberTextFieldState()
     val nickname = "Nickname"
@@ -55,7 +61,8 @@ fun ProfileView(modifier: Modifier = Modifier) {
         listOf("Lista", "de", "Resultados", "de", "Pesquisa")
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(),
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
@@ -65,14 +72,23 @@ fun ProfileView(modifier: Modifier = Modifier) {
                 searchResults = searchResults
             )
         },
-        bottomBar = { AppBottomNavigationBar() }) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) {
-            Column(modifier = Modifier.fillMaxSize() ,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+        bottomBar = {
+            AppBottomNavigationBar(
+                currentRoute = "profile",
+                onBottomNavigateClick = { route -> navController.navigate(route)}
+            )
+        }) { innerPadding ->
+        Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            Column(
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Spacer(modifier = Modifier.height(24.dp))
-                ProfileImage(image = painterResource(id = R.drawable.default_avatar_icon), modifier = Modifier
-                    .size(100.dp)
-                   )
+                ProfileImage(
+                    image = painterResource(id = R.drawable.default_avatar_icon),
+                    modifier = Modifier
+                        .size(100.dp)
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(nickname)
                 Spacer(modifier = Modifier.height(12.dp))
@@ -93,9 +109,10 @@ fun ProfileView(modifier: Modifier = Modifier) {
 @Composable
 fun Bios(modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 20.dp)
-        ) {
+    ) {
         Text("Bios: texto para se colocar na bios, servindo como placeholder")
     }
 }
@@ -110,11 +127,11 @@ fun Stats(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Stat(modifier: Modifier = Modifier, status : String, value : String) {
+fun Stat(modifier: Modifier = Modifier, status: String, value: String) {
     Column(
         modifier = Modifier.padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    ) {
         Text(status)
         Text(value)
     }
@@ -149,5 +166,7 @@ fun ContentBar(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ProfileViewPreview() {
-    ProfileView()
+    ProfileView(
+        navController = {} as NavController
+    )
 }

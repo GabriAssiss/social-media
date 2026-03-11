@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.android.R
 
 data class Message(
@@ -34,7 +35,10 @@ data class Message(
 )
 
 @Composable
-fun ChatView(modifier: Modifier = Modifier) {
+fun ChatView(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val messages = listOf(
         Message("Olá! Como você está?", isFromMe = false),
         Message("Tudo bem, e você? Viu o novo projeto?", isFromMe = true),
@@ -43,7 +47,7 @@ fun ChatView(modifier: Modifier = Modifier) {
     )
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = {ChatTextField()}
+        bottomBar = { ChatTextField() }
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             LazyColumn(
@@ -101,5 +105,7 @@ fun ChatBubble(message: Message) {
 @Preview
 @Composable
 fun ChatViewPreview() {
-    ChatView()
+    ChatView(
+        navController = {} as NavController
+    )
 }
