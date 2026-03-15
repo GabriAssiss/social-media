@@ -29,7 +29,7 @@ fun AppNavigation() {
     NavHost(navController = navController, startDestination = Screen.Auth.route) {
         composable(Screen.Auth.route) {
             AuthView(
-                onLoginClick = { navController.navigate(Screen.Profile.route) },
+                onLoginSuccess = { navController.navigate(Screen.Profile.route) },
                 onRegisterClick = { navController.navigate(Screen.RegisterUsername.route) }
             )
         }

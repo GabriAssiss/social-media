@@ -17,11 +17,16 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun AppOutlinedButton(onClick: () -> Unit, label: String) {
-    Surface () {
+fun AppOutlinedButton(
+    onClick: () -> Unit,
+    label: String,
+    enabled: Boolean = true
+) {
+    Surface {
         OutlinedButton(
             onClick = { onClick() },
-            modifier = Modifier.width(300.dp).padding(bottom = 50.dp)
+            modifier = Modifier.width(300.dp).padding(bottom = 50.dp),
+            enabled = enabled
         ) {
             Text(label)
         }

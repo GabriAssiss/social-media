@@ -19,41 +19,40 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
-fun AppTextField(modifier: Modifier = Modifier, label : String) {
-    var value by remember { mutableStateOf("") }
+fun AppTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     TextField(
-        modifier = Modifier.padding(bottom = 50.dp),
+        modifier = modifier.padding(bottom = 50.dp),
         value = value,
-        onValueChange = { newValue ->
-            value = newValue
-        },
-        label = {Text(label) }
+        onValueChange = onValueChange,
+        label = { Text(label) }
     )
 }
 
 @Composable
-fun PasswordTextField(modifier: Modifier = Modifier, label : String) {
-    var value by remember { mutableStateOf("") }
+fun PasswordTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     var showPassword by remember { mutableStateOf(false) }
     TextField(
         value = value,
-        onValueChange = {
-            value = it
-        },
-        label = {Text(label)},
-        visualTransformation = if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
-            IconButton(
-                onClick = {
-                    showPassword = !showPassword
-                }
-            ) {
+            IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
                     imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = "Ícone de Visibilidade"

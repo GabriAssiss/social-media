@@ -70,11 +70,15 @@ fun RegisterView(
 fun DinamicTextField(label: String) {
     if (label.equals("Senha")) {
         PasswordTextField(
-            label = label
+            label = label,
+            value = "",
+            onValueChange = {}
         )
     } else {
         AppTextField(
-            label = label
+            label = label,
+            value = "",
+            onValueChange = {}
         )
     }
 }
