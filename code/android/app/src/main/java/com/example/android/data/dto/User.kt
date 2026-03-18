@@ -23,9 +23,6 @@ data class CreateUserRequest(
 )
 
 data class CreateUserResponse(
-    val id: Int,
-    val name: String,
-    val email: String,
+    val user: User,
     val password: String,
-    val phone: String
 )

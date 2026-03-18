@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,10 +31,14 @@ fun RegisterView(
     buttonLabel: String,
     onPreviousStepClick: () -> Unit = {},
     onNextStepClick: () -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    fieldValue: String,
+    onValueChange: (String) -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
+
+
             AppReturnButton(
                 onClick = onPreviousStepClick
             )
@@ -45,10 +50,18 @@ fun RegisterView(
                 Text(
                     text = title,
                     fontSize = 20.sp,
-                    modifier = Modifier.width(320.dp)
+                    modifier = Modifier.width(320.dp),
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.padding(top = 60.dp))
-                DinamicTextField(fieldLabel)
+
+
+                DinamicTextField(
+                    fieldLabel,
+                    fieldValue,
+                    onValueChange = onValueChange
+                )
+
                 Spacer(modifier = Modifier.padding(bottom = 50.dp))
                 AppOutlinedButton(
                     onClick = onNextStepClick,
@@ -67,18 +80,22 @@ fun RegisterView(
 }
 
 @Composable
-fun DinamicTextField(label: String) {
+fun DinamicTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit = {}
+) {
     if (label.equals("Senha")) {
         PasswordTextField(
             label = label,
-            value = "",
-            onValueChange = {}
+            value = value,
+            onValueChange = onValueChange
         )
     } else {
         AppTextField(
             label = label,
-            value = "",
-            onValueChange = {}
+            value = value,
+            onValueChange = onValueChange
         )
     }
 }
@@ -96,6 +113,8 @@ fun RegisterViewPreview() {
         buttonLabel,
         onPreviousStepClick = {},
         onNextStepClick = {},
-        onLoginClick = {}
+        onLoginClick = {},
+        fieldValue = "",
+        onValueChange = {}
     )
 }

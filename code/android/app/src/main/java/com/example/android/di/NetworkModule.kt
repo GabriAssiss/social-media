@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.github.cdimascio.dotenv.dotenv
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -16,11 +15,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
+    val api_url = System.getenv("API_URL") ?: ""
     @Provides
     @Singleton
     fun init() : Retrofit {
+
+
         return Retrofit.Builder()
-            .baseUrl("http://192.168.18.7:3000/")
+            .baseUrl(api_url)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

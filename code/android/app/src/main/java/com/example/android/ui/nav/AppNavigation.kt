@@ -1,7 +1,13 @@
 package com.example.android.ui.nav
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +16,7 @@ import com.example.android.ui.view.ChatView
 import com.example.android.ui.view.MessageView
 import com.example.android.ui.view.ProfileView
 import com.example.android.ui.view.RegisterView
+import com.example.android.ui.viewmodel.RegisterViewModel
 
 sealed class Screen(val route: String) {
     object Auth : Screen("auth")
@@ -22,6 +29,7 @@ sealed class Screen(val route: String) {
     object Chat : Screen("chat")
 }
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -34,56 +42,82 @@ fun AppNavigation() {
             )
         }
         composable(Screen.RegisterUsername.route) {
-            val title = "Insira seu nome de usuário."
-            val fieldLabel = "Username"
-            val buttonLabel = "avançar"
+
+            val viewModel: RegisterViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             RegisterView(
                 modifier = Modifier,
-                title,
-                fieldLabel,
-                buttonLabel,
+                title = "Insira seu nome de usuário.",
+                fieldLabel = "Username",
+                buttonLabel = "avançar",
                 onPreviousStepClick = { navController.navigate(Screen.Auth.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterEmail.route) },
-                onLoginClick = { navController.navigate(Screen.Profile.route) })
+                onLoginClick = { navController.navigate(Screen.Auth.route) },
+                fieldValue = uiState.name,
+                onValueChange = { viewModel.updateName(it) },
+            )
         }
         composable(Screen.RegisterEmail.route) {
-            val title = "Insira seu email de usuário."
-            val fieldLabel = "Email"
-            val buttonLabel = "avançar"
+            val backStackEntry = remember {
+                navController.getBackStackEntry(Screen.RegisterUsername.route)
+            }
+            val viewModel: RegisterViewModel = hiltViewModel(backStackEntry)
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             RegisterView(
                 modifier = Modifier,
-                title,
-                fieldLabel,
-                buttonLabel,
+                title = "Insira seu email de usuário.",
+                fieldLabel = "Email",
+                buttonLabel = "avançar",
                 onPreviousStepClick = { navController.navigate(Screen.RegisterUsername.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterCell.route) },
-                onLoginClick = { navController.navigate(Screen.Profile.route) })
+                onLoginClick = { navController.navigate(Screen.Auth.route) },
+                fieldValue = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) }
+            )
         }
+
         composable(Screen.RegisterCell.route) {
-            val title = "Insira seu número de celular."
-            val fieldLabel = "Celular"
-            val buttonLabel = "avançar"
+            val backStackEntry = remember {
+                navController.getBackStackEntry(Screen.RegisterUsername.route)
+            }
+            val viewModel: RegisterViewModel = hiltViewModel(backStackEntry)
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             RegisterView(
                 modifier = Modifier,
-                title,
-                fieldLabel,
-                buttonLabel,
+                title = "Insira seu número de celular.",
+                fieldLabel = "Celular",
+                buttonLabel = "avançar",
                 onPreviousStepClick = { navController.navigate(Screen.RegisterEmail.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterPassword.route) },
-                onLoginClick = { navController.navigate(Screen.Profile.route) })
+                onLoginClick = { navController.navigate(Screen.Auth.route) },
+                fieldValue = uiState.phone,
+                onValueChange = { viewModel.updatePhone(it) }
+            )
         }
+
         composable(Screen.RegisterPassword.route) {
-            val title = "Insira sua senha."
-            val fieldLabel = "Senha"
-            val buttonLabel = "Finalizar"
+            val backStackEntry = remember {
+                navController.getBackStackEntry(Screen.RegisterUsername.route) // ← busca o dono
+            }
+            val viewModel: RegisterViewModel = hiltViewModel(backStackEntry)
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(uiState.success) {
+                if (uiState.success) navController.navigate(Screen.Auth.route)
+            }
+
             RegisterView(
                 modifier = Modifier,
-                title,
-                fieldLabel,
-                buttonLabel,
+                title = "Insira sua senha.",
+                fieldLabel = "Senha",
+                buttonLabel = "Finalizar",
                 onPreviousStepClick = { navController.navigate(Screen.RegisterCell.route) },
-                onNextStepClick = { navController.navigate(Screen.Auth.route) },
-                onLoginClick = { navController.navigate(Screen.Profile.route) })
+                onNextStepClick = { viewModel.register() },
+                onLoginClick = { navController.navigate(Screen.Auth.route) },
+                fieldValue = uiState.password,
+                onValueChange = { viewModel.updatePassword(it) }
+            )
         }
         composable(Screen.Profile.route) {
             ProfileView(
