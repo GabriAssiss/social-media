@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import { BadRequestError } from '../utils/api-errors.js';
-import UserService from '../services/users.service.js';
+import UserService from '../services/auth.service.js';
 
-class UserController {
+class AuthController {
 
     async create(req: Request, res: Response) {
         const { name, email, password, phone } = req.body;
@@ -18,7 +18,13 @@ class UserController {
         }
 
         const newUser = await UserService.create({ name, email, password, phone });
-        return res.status(201).json(newUser);
+        return res.status(201).json({ user: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                phone: newUser.phone,
+                password: newUser.password
+            } });
     }
 
     async login(req: Request, res: Response) {
@@ -44,10 +50,6 @@ class UserController {
          });
     }
 
-    async findAll(req: Request, res: Response) {
-        const users = await UserService.findAll();
-        return res.status(200).json(users);
-    }
 }
 
-export default new UserController();
+export default new AuthController();

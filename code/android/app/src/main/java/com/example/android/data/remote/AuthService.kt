@@ -7,11 +7,11 @@ import LoginResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface UserService {
+interface AuthService {
 
-    @POST("/api/v1/user/")
+    @POST("/api/v1/auth/")
     suspend fun create(@Body body: CreateUserRequest) : CreateUserResponse
 
-    @POST("/api/v1/user/login")
+    @POST("/api/v1/auth/login")
     suspend fun login(@Body body: LoginRequest) : LoginResponse
 }
