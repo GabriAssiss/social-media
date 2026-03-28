@@ -1,5 +1,4 @@
-import type { CreateUserRequest } from '../dtos/request/CreateUserRequest.js';
-import type { LoginUserRequest } from '../dtos/request/LoginUserRequest.js';
+import type { CreateUserRequest, LoginUserRequest } from '../dtos/UserDTO.js';
 import UserRepository from '../repositories/users.repository.js';
 import bcrypt from 'bcrypt';
 import jwt, { type SignOptions } from 'jsonwebtoken';

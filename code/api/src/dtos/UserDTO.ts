@@ -5,3 +5,10 @@ export interface CreateUserRequest {
   phone: string;
 }
 
+export interface LoginUserRequest {
+  email: string;
+  password: string;
+}
+
+
+

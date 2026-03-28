@@ -1,4 +1,4 @@
-import type { CreateUserRequest } from '../dtos/request/CreateUserRequest.js'; 
+import type { CreateUserRequest } from '../dtos/UserDTO.js'; 
 import {  Prisma } from '../../generated/prisma/client.js'
 import prisma from '../database/prisma.client.js';
 

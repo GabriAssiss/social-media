@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { BadRequestError } from '../utils/api-errors.js';
-import UserService from '../services/auth.service.js';
+import userService from '../services/auth.service.js';
 
 class AuthController {
 
@@ -17,7 +17,7 @@ class AuthController {
             throw new BadRequestError('Email or phone are required.');
         }
 
-        const newUser = await UserService.create({ name, email, password, phone });
+        const newUser = await userService.create({ name, email, password, phone });
         return res.status(201).json({ user: {
                 id: newUser.id,
                 name: newUser.name,
@@ -37,7 +37,7 @@ class AuthController {
             throw new BadRequestError('Password is required.');
         }
 
-        const response = await UserService.login({ email, password });
+        const response = await userService.login({ email, password });
 
         return res.status(200).json({ 
             user: {
