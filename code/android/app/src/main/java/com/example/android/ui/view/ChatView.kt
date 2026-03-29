@@ -16,17 +16,16 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.android.R
 
 data class Message(
@@ -37,7 +36,7 @@ data class Message(
 @Composable
 fun ChatView(
     modifier: Modifier = Modifier,
-    navController: NavController
+    onBackClick: () -> Unit = {}
 ) {
     val messages = listOf(
         Message("Olá! Como você está?", isFromMe = false),
@@ -64,7 +63,12 @@ fun ChatView(
 
 @Composable
 fun ChatBubble(message: Message) {
-    val backgroundColor = if (message.isFromMe) Color.White else Color(0xFFE0E0E0)
+    val backgroundColor = if (message.isFromMe)
+        MaterialTheme.colorScheme.primaryContainer
+    else
+        MaterialTheme.colorScheme.surfaceVariant
+
+    val textColor = MaterialTheme.colorScheme.onSurface // ← sem hardcode
     val alignment = if (message.isFromMe) Alignment.End else Alignment.Start
 
     Column(
@@ -94,18 +98,15 @@ fun ChatBubble(message: Message) {
                 Text(
                     text = message.text,
                     modifier = Modifier.padding(12.dp),
-                    color = Color.Black
+                    color = textColor
                 )
             }
         }
     }
 }
 
-
 @Preview
 @Composable
 fun ChatViewPreview() {
-    ChatView(
-        navController = {} as NavController
-    )
+    ChatView()
 }

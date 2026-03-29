@@ -25,6 +25,5 @@
             </intent-filter>
         </activity>
     </application>
-    <meta-data android:value="${API_KEY}" />
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

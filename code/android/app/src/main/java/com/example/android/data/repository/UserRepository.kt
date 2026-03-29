@@ -4,7 +4,7 @@ import CreateUserRequest
 import CreateUserResponse
 import LoginRequest
 import LoginResponse
-import com.example.android.data.remote.UserService
+import com.example.android.data.remote.AuthService
 import javax.inject.Inject
 
 interface UserRepository {
@@ -13,7 +13,7 @@ interface UserRepository {
 }
 
 class UserRepositoryImpl @Inject constructor(
-    private val api: UserService
+    private val api: AuthService
 ) : UserRepository {
 
     override suspend fun login(email: String, password: String): Result<LoginResponse> =

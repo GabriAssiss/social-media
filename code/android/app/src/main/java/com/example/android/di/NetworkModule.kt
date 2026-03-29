@@ -1,6 +1,6 @@
 package com.example.android.di
 
-import com.example.android.data.remote.UserService
+import com.example.android.data.remote.AuthService
 import com.example.android.data.repository.UserRepository
 import com.example.android.data.repository.UserRepositoryImpl
 import dagger.Module
@@ -28,10 +28,10 @@ class NetworkModule {
     }
 
     @Provides @Singleton
-    fun provideUserApi(retrofit: Retrofit): UserService =
-        retrofit.create(UserService::class.java)
+    fun provideUserApi(retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 
     @Provides @Singleton
-    fun provideUserRepository(api: UserService): UserRepository =
+    fun provideUserRepository(api: AuthService): UserRepository =
         UserRepositoryImpl(api)
 }

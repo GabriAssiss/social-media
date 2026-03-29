@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.ui.components.AppOutlinedButton
+import com.example.android.ui.viewmodel.AuthUiState
 import com.example.android.ui.viewmodel.AuthViewModel
 
 
@@ -43,27 +44,48 @@ fun AuthView(
         uiState.token?.let { onLoginSuccess() }
     }
 
+    AuthViewContent(
+        uiState = uiState,
+        email = email,
+        password = password,
+        onEmailChange = { email = it },
+        onPasswordChange = { password = it },
+        onLoginClick = { viewModel.login(email, password) },
+        onRegisterClick = onRegisterClick,
+        modifier = modifier
+    )
+}
+
+
+@Composable
+fun AuthViewContent(
+    uiState: AuthUiState,
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-
             Column(
                 modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 uiState.error?.let {
                     Text(it, color = MaterialTheme.colorScheme.error)
                 }
-
                 AppTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = onEmailChange,
                     label = "Email ou Celular"
                 )
                 PasswordTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = onPasswordChange,
                     label = "Senha"
                 )
             }
@@ -74,26 +96,28 @@ fun AuthView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AppOutlinedButton(
-                    onClick = { viewModel.login(email, password) },
+                    onClick = onLoginClick,
                     label = if (uiState.isLoading) "Carregando..." else "Entrar",
                     enabled = !uiState.isLoading
                 )
-                AppOutlinedButton(
-                    onClick = onRegisterClick,
-                    label = "Cadastrar"
-                )
+                AppOutlinedButton(onClick = onRegisterClick, label = "Cadastrar")
                 Text("Esqueci a senha...", color = MaterialTheme.colorScheme.primary)
             }
         }
     }
 }
 
+
 @Preview
 @Composable
 fun LoginViewPreview() {
-    AuthView(
-        viewModel = hiltViewModel(),
-        onLoginSuccess = {},
+    AuthViewContent(
+        uiState = AuthUiState(),
+        email = "teste@email.com",
+        password = "123456",
+        onEmailChange = {},
+        onPasswordChange = {},
+        onLoginClick = {},
         onRegisterClick = {}
     )
 }

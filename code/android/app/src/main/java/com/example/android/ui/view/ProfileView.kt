@@ -15,16 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.VideoCameraBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
@@ -41,20 +35,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.android.R
 import com.example.android.ui.components.AppTopNavigation
 
-
-const val GRAY = 0xFFD1D1D1;
+const val GRAY = 0xFFD1D1D1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileView(
     modifier: Modifier = Modifier,
-    navController: NavController
+    onNavigate: (String) -> Unit = {}
 ) {
-
     val textFieldState = rememberTextFieldState()
     val nickname = "Nickname"
     val searchResults = remember {
@@ -66,18 +57,17 @@ fun ProfileView(
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
-                onSearch = { query ->
-                    println("Buscando por: $query")
-                },
+                onSearch = { query -> println("Buscando por: $query") },
                 searchResults = searchResults
             )
         },
         bottomBar = {
             AppBottomNavigationBar(
                 currentRoute = "profile",
-                onBottomNavigateClick = { route -> navController.navigate(route)}
+                onBottomNavigateClick = { route -> onNavigate(route) }
             )
-        }) { innerPadding ->
+        }
+    ) { innerPadding ->
         Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             Column(
                 modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -86,16 +76,14 @@ fun ProfileView(
                 Spacer(modifier = Modifier.height(24.dp))
                 ProfileImage(
                     image = painterResource(id = R.drawable.default_avatar_icon),
-                    modifier = Modifier
-                        .size(100.dp)
+                    modifier = Modifier.size(100.dp)
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(nickname)
                 Spacer(modifier = Modifier.height(12.dp))
                 Bios()
                 Row(
-                    modifier = Modifier
-                        .padding(20.dp),
+                    modifier = Modifier.padding(20.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Stats(modifier)
@@ -120,7 +108,6 @@ fun Bios(modifier: Modifier = Modifier) {
 @Composable
 fun Stats(modifier: Modifier = Modifier) {
     val stats = listOf("seguindo", "seguidores", "posts")
-
     for (stat in stats) {
         Stat(modifier, stat, "0")
     }
@@ -142,7 +129,6 @@ fun Stat(modifier: Modifier = Modifier, status: String, value: String) {
 fun ContentBar(modifier: Modifier = Modifier) {
     val tabs = listOf("Fotos", "Vídeos")
     val icons = listOf(Icons.Default.Photo, Icons.Default.VideoCameraBack)
-
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     SecondaryTabRow(
@@ -155,9 +141,7 @@ fun ContentBar(modifier: Modifier = Modifier) {
                 selected = selectedIndex == index,
                 onClick = { selectedIndex = index },
                 text = { Text(text = title) },
-                icon = {
-                    Icon(imageVector = icons[index], contentDescription = null)
-                }
+                icon = { Icon(imageVector = icons[index], contentDescription = null) }
             )
         }
     }
@@ -166,7 +150,5 @@ fun ContentBar(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ProfileViewPreview() {
-    ProfileView(
-        navController = {} as NavController
-    )
+    ProfileView()
 }

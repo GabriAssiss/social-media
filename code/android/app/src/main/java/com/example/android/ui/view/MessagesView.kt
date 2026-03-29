@@ -13,39 +13,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.components.UserCard
-
 
 @Composable
 fun MessageView(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onNavigate: (String) -> Unit = {},
     onChatClick: () -> Unit = {}
 ) {
-
     val textFieldState = rememberTextFieldState()
     val searchResults = remember {
         listOf("Lista", "de", "Resultados", "de", "Pesquisa")
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
-                onSearch = { query ->
-                    println("Buscando por: $query")
-                },
+                onSearch = { query -> println("Buscando por: $query") },
                 searchResults = searchResults
             )
         },
         bottomBar = {
             AppBottomNavigationBar(
                 currentRoute = "messages",
-                onBottomNavigateClick = { route -> navController.navigate(route) }
+                onBottomNavigateClick = { route -> onNavigate(route) }
             )
-        }) { innerPadding ->
+        }
+    ) { innerPadding ->
         Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())
@@ -61,7 +58,5 @@ fun MessageView(
 @Preview
 @Composable
 fun MessageViewPreview() {
-    MessageView(
-        navController = {} as NavController
-    )
+    MessageView()
 }

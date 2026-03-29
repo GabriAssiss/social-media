@@ -41,23 +41,23 @@ fun AppNavigation() {
                 onRegisterClick = { navController.navigate(Screen.RegisterUsername.route) }
             )
         }
-        composable(Screen.RegisterUsername.route) {
 
+        composable(Screen.RegisterUsername.route) {
             val viewModel: RegisterViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
             RegisterView(
                 modifier = Modifier,
                 title = "Insira seu nome de usuário.",
                 fieldLabel = "Username",
-                buttonLabel = "avançar",
+                buttonLabel = "Avançar",
                 onPreviousStepClick = { navController.navigate(Screen.Auth.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterEmail.route) },
                 onLoginClick = { navController.navigate(Screen.Auth.route) },
                 fieldValue = uiState.name,
-                onValueChange = { viewModel.updateName(it) },
+                onValueChange = { viewModel.updateName(it) }
             )
         }
+
         composable(Screen.RegisterEmail.route) {
             val backStackEntry = remember {
                 navController.getBackStackEntry(Screen.RegisterUsername.route)
@@ -66,9 +66,9 @@ fun AppNavigation() {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             RegisterView(
                 modifier = Modifier,
-                title = "Insira seu email de usuário.",
+                title = "Insira seu email.",
                 fieldLabel = "Email",
-                buttonLabel = "avançar",
+                buttonLabel = "Avançar",
                 onPreviousStepClick = { navController.navigate(Screen.RegisterUsername.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterCell.route) },
                 onLoginClick = { navController.navigate(Screen.Auth.route) },
@@ -87,7 +87,7 @@ fun AppNavigation() {
                 modifier = Modifier,
                 title = "Insira seu número de celular.",
                 fieldLabel = "Celular",
-                buttonLabel = "avançar",
+                buttonLabel = "Avançar",
                 onPreviousStepClick = { navController.navigate(Screen.RegisterEmail.route) },
                 onNextStepClick = { navController.navigate(Screen.RegisterPassword.route) },
                 onLoginClick = { navController.navigate(Screen.Auth.route) },
@@ -98,7 +98,7 @@ fun AppNavigation() {
 
         composable(Screen.RegisterPassword.route) {
             val backStackEntry = remember {
-                navController.getBackStackEntry(Screen.RegisterUsername.route) // ← busca o dono
+                navController.getBackStackEntry(Screen.RegisterUsername.route)
             }
             val viewModel: RegisterViewModel = hiltViewModel(backStackEntry)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -119,24 +119,24 @@ fun AppNavigation() {
                 onValueChange = { viewModel.updatePassword(it) }
             )
         }
+
         composable(Screen.Profile.route) {
             ProfileView(
-                navController = navController
+                onNavigate = { route -> navController.navigate(route) }
             )
         }
 
         composable(Screen.Messages.route) {
             MessageView(
-                navController = navController,
+                onNavigate = { route -> navController.navigate(route) },
                 onChatClick = { navController.navigate(Screen.Chat.route) }
             )
         }
 
         composable(Screen.Chat.route) {
             ChatView(
-                navController = navController
+                onBackClick = { navController.popBackStack() }
             )
         }
-
     }
 }
