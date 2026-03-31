@@ -8,8 +8,8 @@ const app = express();
 
 app.use(express.json());
 app.use('/api/v1/auth/', authRouter);
-app.use('/api/v1/users/', userRouter);
 app.use(errorMiddleware);
+app.use('/api/v1/users/', userRouter);
 app.use('/api/v1/follows/', followRouter);
 
 export default app;

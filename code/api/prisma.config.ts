@@ -7,7 +7,7 @@ module.exports = defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: 'tsx ./prisma/seeds/follows.ts && tsx ./prisma/seeds/users.ts',
+    seed: 'npx tsx ./prisma/seeds/users.ts && npx tsx ./prisma/seeds/follows.ts',
   },
   datasource: {
     url: process.env["DATABASE_URL"],

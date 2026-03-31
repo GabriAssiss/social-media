@@ -10,5 +10,12 @@ export interface LoginUserRequest {
   password: string;
 }
 
+export interface ProfileResponse {
+  id: number;
+  name: string;
+  followersCount: number;
+  followedCount: number;
+}
+
 
 

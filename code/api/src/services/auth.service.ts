@@ -2,11 +2,24 @@ import type { CreateUserRequest, LoginUserRequest } from '../dtos/UserDTO.js';
 import UserRepository from '../repositories/users.repository.js';
 import bcrypt from 'bcrypt';
 import jwt, { type SignOptions } from 'jsonwebtoken';
-import { NotFoundError, UnauthorizedError } from '../utils/api-errors.js';
+import { NotFoundError, ConflictError, UnauthorizedError } from '../utils/api-errors.js';
 
 class AuthService {
 
     async create(userData: CreateUserRequest) {
+
+        if(await UserRepository.findByEmail(userData.email)) {
+            throw new ConflictError('Email already in use.');
+        }
+
+        if(await UserRepository.findByPhone(userData.phone)) {
+            throw new ConflictError('Phone already in use.');
+        }
+
+        if(await UserRepository.findByName(userData.name)) {
+            throw new ConflictError('Name already in use.');
+        }
+
         userData.password = await bcrypt.hash(userData.password, 10);
         const newUser = await UserRepository.create(userData);
         return newUser; 

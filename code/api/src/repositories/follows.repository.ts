@@ -47,7 +47,6 @@ class FollowRepository {
         const follows = await prisma.follow.findMany({
             where: {
                 followerId: userId,
-
             },
         });
         return follows;
@@ -60,6 +59,24 @@ class FollowRepository {
             },
         });
         return follows;
+    }
+
+    async followersCount(userId: number) {
+        const count = await prisma.follow.count({
+            where: {
+                followedId: userId,
+            },
+        });
+        return count;
+    }
+
+    async followedCount(userId: number) {
+        const count = await prisma.follow.count({
+            where: {
+                followerId: userId,
+            },
+        });
+        return count;
     }
 }
 

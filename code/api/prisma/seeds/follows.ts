@@ -22,7 +22,6 @@ async function seed() {
 }
 
 seed()
-    .then(() => {
-        console.log('Seeding completed successfully.');
-        prisma.$disconnect();
-    });
+    .then(() => console.log('Seeding completed successfully.'))
+    .catch(console.error)
+    .finally(() => prisma.$disconnect());

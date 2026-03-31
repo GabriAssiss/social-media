@@ -19,6 +19,16 @@ class UserRepository {
         return newUser;
     }
 
+    async findByName(name: string) {
+        const user = await prisma.user.findUnique({
+            where: {
+                name: name
+            }
+        });
+
+        return user;
+    }
+
     async findByEmail(email: string) {
         const user = await prisma.user.findUnique({
             where: {
@@ -37,11 +47,6 @@ class UserRepository {
         });
 
         return user;
-    }
-
-    async findAll() {
-        const users = await prisma.user.findMany();
-        return users;
     }
 
     async findById(id: number) {
