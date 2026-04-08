@@ -3,6 +3,7 @@ package com.example.android.ui.view
 import AppBottomNavigationBar
 import ProfileImage
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android.R
 import com.example.android.ui.components.AppTopNavigation
+import com.example.android.ui.viewmodel.ProfileUiState
 
 const val GRAY = 0xFFD1D1D1
 
@@ -44,10 +46,12 @@ const val GRAY = 0xFFD1D1D1
 @Composable
 fun ProfileView(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit = {}
+    uiState: ProfileUiState,
+    onNavigate: (String) -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()
-    val nickname = "Nickname"
+    val nickname = uiState.name.toString()
     val searchResults = remember {
         listOf("Lista", "de", "Resultados", "de", "Pesquisa")
     }
@@ -58,7 +62,8 @@ fun ProfileView(
             AppTopNavigation(
                 textFieldState = textFieldState,
                 onSearch = { query -> println("Buscando por: $query") },
-                searchResults = searchResults
+                searchResults = searchResults,
+                onLogout = onLogout
             )
         },
         bottomBar = {
@@ -81,13 +86,19 @@ fun ProfileView(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(nickname)
                 Spacer(modifier = Modifier.height(12.dp))
-                Bios()
                 Row(
                     modifier = Modifier.padding(20.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Stats(modifier)
+                    Stats(modifier, uiState)
                 }
+                Box(
+                    modifier = Modifier.padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Bios()
+                }
+                Spacer(modifier = Modifier.height(12.dp))
                 ContentBar()
             }
         }
@@ -106,23 +117,38 @@ fun Bios(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Stats(modifier: Modifier = Modifier) {
-    val stats = listOf("seguindo", "seguidores", "posts")
-    for (stat in stats) {
-        Stat(modifier, stat, "0")
+fun Stats(modifier: Modifier = Modifier, uiState: ProfileUiState) {
+
+    Row {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Seguindo")
+            Text(uiState.followedCount.toString())
+        }
+
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Seguidores")
+            Text(uiState.followersCount.toString())
+        }
+
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Posts")
+            Text("0")
+        }
+
     }
+
 }
 
-@Composable
-fun Stat(modifier: Modifier = Modifier, status: String, value: String) {
-    Column(
-        modifier = Modifier.padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(status)
-        Text(value)
-    }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,5 +176,7 @@ fun ContentBar(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ProfileViewPreview() {
-    ProfileView()
+    ProfileView(
+        uiState = ProfileUiState()
+    )
 }

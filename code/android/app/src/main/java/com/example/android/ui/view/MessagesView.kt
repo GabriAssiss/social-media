@@ -20,7 +20,8 @@ import com.example.android.ui.components.UserCard
 fun MessageView(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit = {},
-    onChatClick: () -> Unit = {}
+    onChatClick: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()
     val searchResults = remember {
@@ -33,7 +34,8 @@ fun MessageView(
             AppTopNavigation(
                 textFieldState = textFieldState,
                 onSearch = { query -> println("Buscando por: $query") },
-                searchResults = searchResults
+                searchResults = searchResults,
+                onLogout = onLogout
             )
         },
         bottomBar = {

@@ -3,7 +3,8 @@ package com.example.android.ui.viewmodel
 import User
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.data.repository.UserRepository
+import com.example.android.data.repository.AuthRepository
+import com.example.android.di.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +23,19 @@ data class AuthUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val repository: AuthRepository,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+
+    init {
+        val token = tokenManager.getToken()
+        if (token != null) {
+            _uiState.update { it.copy(token = token) }
+        }
+    }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -34,6 +43,7 @@ class AuthViewModel @Inject constructor(
 
             repository.login(email, password)
                 .onSuccess { response ->
+                    tokenManager.saveToken(response.token)
                     _uiState.update {
                         it.copy(isLoading = false, user = response.user, token = response.token)
                     }
@@ -44,6 +54,11 @@ class AuthViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun logout() {
+        tokenManager.clearToken()
+        _uiState.update { AuthUiState() }
     }
 }
 

@@ -22,56 +22,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.ui.components.AppOutlinedButton
 import com.example.android.ui.components.AppReturnButton
+import com.example.android.ui.viewmodel.RegisterUiState
 
 @Composable
 fun RegisterView(
     modifier: Modifier = Modifier,
-    title: String,
-    fieldLabel: String,
-    buttonLabel: String,
+    uiState: RegisterUiState,
     onPreviousStepClick: () -> Unit = {},
     onNextStepClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
-    fieldValue: String,
-    onValueChange: (String) -> Unit = {}
+    onNameChange: (String) -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
+    onPhoneChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
 
+            AppReturnButton(onClick = onPreviousStepClick)
 
-            AppReturnButton(
-                onClick = onPreviousStepClick
-            )
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = title,
+                    text = "Insira as informações da conta",
                     fontSize = 20.sp,
                     modifier = Modifier.width(320.dp),
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.padding(top = 60.dp))
 
-
-                DinamicTextField(
-                    fieldLabel,
-                    fieldValue,
-                    onValueChange = onValueChange
+                AppTextField(
+                    label = "Nome",
+                    value = uiState.name,
+                    onValueChange = onNameChange
+                )
+                AppTextField(
+                    label = "Email",
+                    value = uiState.email,
+                    onValueChange = onEmailChange
+                )
+                AppTextField(
+                    label = "Celular",
+                    value = uiState.phone,
+                    onValueChange = onPhoneChange
+                )
+                PasswordTextField(
+                    label = "Senha",
+                    value = uiState.password,
+                    onValueChange = onPasswordChange
                 )
 
                 Spacer(modifier = Modifier.padding(bottom = 50.dp))
                 AppOutlinedButton(
                     onClick = onNextStepClick,
-                    label = buttonLabel
+                    label = "Registrar conta"
                 )
                 Text(
                     "Já tenho uma conta",
-                    modifier = Modifier.clickable {
-                        onLoginClick()
-                    },
+                    modifier = Modifier.clickable { onLoginClick() },
                     textDecoration = TextDecoration.Underline
                 )
             }
@@ -79,42 +90,18 @@ fun RegisterView(
     }
 }
 
-@Composable
-fun DinamicTextField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit = {}
-) {
-    if (label.equals("Senha")) {
-        PasswordTextField(
-            label = label,
-            value = value,
-            onValueChange = onValueChange
-        )
-    } else {
-        AppTextField(
-            label = label,
-            value = value,
-            onValueChange = onValueChange
-        )
-    }
-}
 
 @Preview
 @Composable
 fun RegisterViewPreview() {
-    val title = "Insira seu nome de usuário."
-    val fieldLabel = "Username"
-    val buttonLabel = "avançar"
     RegisterView(
-        modifier = Modifier,
-        title,
-        fieldLabel,
-        buttonLabel,
+        uiState = RegisterUiState(),
         onPreviousStepClick = {},
         onNextStepClick = {},
         onLoginClick = {},
-        fieldValue = "",
-        onValueChange = {}
+        onNameChange = {},
+        onEmailChange = {},
+        onPhoneChange = {},
+        onPasswordChange = {}
     )
 }

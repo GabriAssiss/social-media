@@ -9,9 +9,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +37,8 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import com.example.android.ui.viewmodel.AuthUiState
+import com.example.android.ui.viewmodel.ProfileUiState
 
 const val GRAY = 0xFFD1D1D1;
 
@@ -44,7 +50,11 @@ fun AppTopNavigation(
     textFieldState: TextFieldState,
     onSearch: (String) -> Unit,
     searchResults: List<String>,
+    onLogout: () -> Unit = {}
 ) {
+
+    var menuExpanded by rememberSaveable { mutableStateOf(false) }
+
     Surface(
         color = Color(GRAY),
         shadowElevation = 2.dp,
@@ -53,8 +63,31 @@ fun AppTopNavigation(
             CenterAlignedTopAppBar(
                 title = { Text("") },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Opções")
+                    Box {
+                        IconButton(onClick = {
+                            menuExpanded = true
+                        }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Opções")
+                        }
+
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {Text("Logout")},
+                                onClick = {
+                                    menuExpanded = false
+                                    onLogout()
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.ExitToApp,
+                                        contentDescription = "Logout",
+                                    )
+                                }
+                            )
+                        }
                     }
                 },
                 actions = {

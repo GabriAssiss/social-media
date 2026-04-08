@@ -26,3 +26,10 @@ data class CreateUserResponse(
     val user: User,
     val password: String,
 )
+
+data class ProfileResponse(
+    val id: Int,
+    val name: String,
+    val followersCount: Int,
+    val followedCount: Int,
+)

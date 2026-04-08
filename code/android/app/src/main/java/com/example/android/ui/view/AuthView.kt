@@ -13,52 +13,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.android.ui.components.AppOutlinedButton
 import com.example.android.ui.viewmodel.AuthUiState
-import com.example.android.ui.viewmodel.AuthViewModel
-
 
 @Composable
 fun AuthView(
-    modifier: Modifier = Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
-    onLoginSuccess: () -> Unit = {},
-    onRegisterClick: () -> Unit = {}
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    LaunchedEffect(uiState.token) {
-        uiState.token?.let { onLoginSuccess() }
-    }
-
-    AuthViewContent(
-        uiState = uiState,
-        email = email,
-        password = password,
-        onEmailChange = { email = it },
-        onPasswordChange = { password = it },
-        onLoginClick = { viewModel.login(email, password) },
-        onRegisterClick = onRegisterClick,
-        modifier = modifier
-    )
-}
-
-
-@Composable
-fun AuthViewContent(
     uiState: AuthUiState,
     email: String,
     password: String,
@@ -71,7 +34,9 @@ fun AuthViewContent(
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -91,7 +56,9 @@ fun AuthViewContent(
             }
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(bottom = 50.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 50.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -107,11 +74,10 @@ fun AuthViewContent(
     }
 }
 
-
 @Preview
 @Composable
-fun LoginViewPreview() {
-    AuthViewContent(
+fun AuthViewPreview() {
+    AuthView(
         uiState = AuthUiState(),
         email = "teste@email.com",
         password = "123456",
