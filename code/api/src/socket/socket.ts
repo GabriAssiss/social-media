@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import type { Server as HttpServer } from 'node:http';
-import jwt, { NotBeforeError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { Message } from '../../mongoose/models/message.model.js';
 import usersRepository from "../repositories/users.repository.js";
 import { NotFoundError, UnauthorizedError } from '../utils/api-errors.js';
