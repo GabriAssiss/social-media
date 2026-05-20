@@ -8,3 +8,5 @@ router.use(authMiddleware);
 
 router.get('/conversations', chatController.getConversations);
 router.get('/history/:otherUserId', chatController.getHistory);
+
+export default router;

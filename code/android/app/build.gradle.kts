@@ -17,10 +17,11 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_URL", "\"${System.getenv("API_URL") ?: ""}\"")
+        buildConfigField("String", "API_URL", "\"http://192.168.18.7:3000\"")
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -40,13 +41,20 @@ android {
         compose = true
         buildConfig = true
     }
+    packaging {
+        resources {
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
 }
 
 dependencies {
+    implementation("io.socket:socket.io-client:2.1.1")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.dagger:hilt-android:2.51")
+    implementation(libs.identity.doctypes.jvm)
     ksp("com.google.dagger:hilt-compiler:2.51")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")

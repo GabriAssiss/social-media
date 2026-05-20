@@ -11,9 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.IconButton
@@ -63,9 +65,11 @@ fun PasswordTextField(
 }
 
 @Composable
-fun ChatTextField() {
-    var value by remember { mutableStateOf("") }
-
+fun ChatTextField(
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
+    onSendClick: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,7 +77,7 @@ fun ChatTextField() {
     ) {
         OutlinedTextField(
             value = value,
-            onValueChange = { value = it },
+            onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Mensagem...") },
             shape = RoundedCornerShape(32.dp),
@@ -90,9 +94,11 @@ fun ChatTextField() {
                     IconButton(onClick = {}) {
                         Icon(Icons.Default.Image, contentDescription = null)
                     }
+                    IconButton(onClick = onSendClick) {
+                        Icon(Icons.Default.Send, contentDescription = "Enviar")
+                    }
                 }
             },
-
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.LightGray,
                 unfocusedBorderColor = Color.LightGray

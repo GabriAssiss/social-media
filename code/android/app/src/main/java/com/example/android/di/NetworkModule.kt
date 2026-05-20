@@ -1,11 +1,15 @@
 package com.example.android.di
 
+import com.example.android.BuildConfig
 import com.example.android.data.remote.AuthInterceptor
 import com.example.android.data.remote.AuthService
+import com.example.android.data.remote.ChatService
 import com.example.android.data.remote.FollowService
 import com.example.android.data.remote.UserService
 import com.example.android.data.repository.AuthRepository
 import com.example.android.data.repository.AuthRepositoryImpl
+import com.example.android.data.repository.ChatRepository
+import com.example.android.data.repository.ChatRepositoryImpl
 import com.example.android.data.repository.FollowRepository
 import com.example.android.data.repository.FollowRepositoryImpl
 import com.example.android.data.repository.UserRepository
@@ -33,7 +37,7 @@ class NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl(BuildConfig.API_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -63,4 +67,11 @@ class NetworkModule {
     fun provideFollowRepository(api: FollowService): FollowRepository =
         FollowRepositoryImpl(api)
 
+    @Provides @Singleton
+    fun provideChatService(retrofit: Retrofit): ChatService =
+        retrofit.create(ChatService::class.java)
+
+    @Provides @Singleton
+    fun provideChatRepository(api: ChatService): ChatRepository =
+        ChatRepositoryImpl(api)
 }

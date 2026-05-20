@@ -1,26 +1,39 @@
 import type { Request, Response } from 'express';
 import { Message } from '../../mongoose/models/message.model.js';
 import prisma from '../database/prisma.client.js';
-import { BadRequestError, ServerError } from '../utils/api-errors.js';
+import { BadRequestError, ServerError, NotFoundError } from '../utils/api-errors.js';
 
 class ChatController {
 
     async getHistory(req: Request, res: Response) {
         const userId = req.user.id;
         const otherUserId = Number(req.params.otherUserId);
+        const page = Number(req.query.page) || 1;
+        const limitAmount = 50;
 
         if (!otherUserId || isNaN(otherUserId)) {
             throw new BadRequestError('ID inválido.');
         }
 
+        const otherUser = await prisma.user.findUnique({
+            where: { id: otherUserId }
+        });
+
+        if (!otherUser) {
+            throw new NotFoundError('Usuário destinatário não existe.');
+        }
+
         const messages = await Message.find({
             $or: [
-                { senderId: userId,      receiverId: otherUserId },
+                { senderId: userId, receiverId: otherUserId },
                 { senderId: otherUserId, receiverId: userId }
             ]
-        }).sort({ createdAt: 1 });
+        })
+        .sort({ createdAt: -1 })
+        .limit(limitAmount)
+        .skip((page - 1) * limitAmount);
 
-        return res.status(200).json(messages);
+        return res.status(200).json(messages.reverse());
     }
 
     async getConversations(req: Request, res: Response) {
@@ -58,7 +71,11 @@ class ChatController {
                 user: users.find(u => u.id === m._id),
                 lastMessage: m.lastMessage
             }))
-            .filter(c => c.user !== undefined);
+            .filter(c => c.user !== undefined)
+            .sort((a, b) =>
+                new Date(b.lastMessage.createdAt).getTime() -
+                new Date(a.lastMessage.createdAt).getTime()
+            ); 
 
         return res.status(200).json(conversations);
     }

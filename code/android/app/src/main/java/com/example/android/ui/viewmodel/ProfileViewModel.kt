@@ -18,7 +18,8 @@ data class ProfileUiState(
     val error: String? = null,
     val followersCount: Int = 0,
     val followedCount: Int = 0,
-    val isFollowed: Boolean = false
+    val isFollowed: Boolean = false,
+    val isSessionExpired: Boolean = false
 )
 
 @HiltViewModel
@@ -50,7 +51,11 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    _uiState.value = _uiState.value.copy(error = it.message)
+                    tokenManager.clearToken()
+                    _uiState.value = _uiState.value.copy(
+                        error = it.message,
+                        isSessionExpired = true
+                    )
                 }
         }
     }

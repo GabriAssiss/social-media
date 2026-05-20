@@ -9,4 +9,6 @@ const messageSchema = new Schema({
     read: { type: Boolean, default: false }
 })
 
+messageSchema.index({ senderId: 1, receiverId: 1, createdAt: -1 });
+
 export const Message = mongoose.model("Message", messageSchema)

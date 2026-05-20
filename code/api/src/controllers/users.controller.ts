@@ -6,13 +6,13 @@ class UserController {
     async myProfile(req: Request, res: Response) {
         const userId = req.user.id;
         const response = await userService.profile(userId);
-        return res.status(200).json({ user: response });
+        return res.status(200).json(response);
     }
 
     async profile(req: Request, res: Response) {
         const userId = Number(req.params.userId);
         const response = await userService.profile(userId);
-        return res.status(200).json({ user: response });
+        return res.status(200).json(response);
     }
 
 }

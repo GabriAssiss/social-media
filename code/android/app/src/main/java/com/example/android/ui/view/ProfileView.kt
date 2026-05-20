@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.example.android.R
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.viewmodel.ProfileUiState
+import com.example.android.ui.viewmodel.UserSearchUiState
 
 const val GRAY = 0xFFD1D1D1
 
@@ -52,17 +53,15 @@ fun ProfileView(
 ) {
     val textFieldState = rememberTextFieldState()
     val nickname = uiState.name.toString()
-    val searchResults = remember {
-        listOf("Lista", "de", "Resultados", "de", "Pesquisa")
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
-                onSearch = { query -> println("Buscando por: $query") },
-                searchResults = searchResults,
+                onQueryChange = {},
+                searchState = UserSearchUiState.Idle,
+                onUserSelected = {},
                 onLogout = onLogout
             )
         },
