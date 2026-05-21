@@ -31,8 +31,6 @@ sealed interface UserSearchUiState {
     data class Error(val message: String) : UserSearchUiState
 }
 
-// ── ViewModel ───────────────────────────────────────────────────────────────
-
 @HiltViewModel
 class ConversationsViewModel @Inject constructor(
     private val chatRepository: ChatRepository,

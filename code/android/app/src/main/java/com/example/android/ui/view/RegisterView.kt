@@ -2,7 +2,12 @@ package com.example.android.ui.view
 
 import AppTextField
 import PasswordTextField
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import com.example.android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,55 +41,70 @@ fun RegisterView(
     onPhoneChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {}
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-
-            AppReturnButton(onClick = onPreviousStepClick)
 
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                AppReturnButton(
+                    modifier = Modifier.align(Alignment.Start), 
+                    onClick = onPreviousStepClick
+                )
+
                 Text(
-                    text = "Insira as informações da conta",
+                    text = stringResource(R.string.insert_account_info),
                     fontSize = 20.sp,
                     modifier = Modifier.width(320.dp),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.padding(top = 60.dp))
+                Spacer(modifier = Modifier.height(60.dp))
 
                 AppTextField(
-                    label = "Nome",
+                    label = stringResource(R.string.name),
                     value = uiState.name,
-                    onValueChange = onNameChange
+                    onValueChange = onNameChange,
+                    isError = uiState.nameError != null,
+                    supportingText = uiState.nameError?.let { { Text(it) } }
                 )
                 AppTextField(
-                    label = "Email",
+                    label = stringResource(R.string.email),
                     value = uiState.email,
-                    onValueChange = onEmailChange
+                    onValueChange = onEmailChange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    isError = uiState.emailError != null,
+                    supportingText = uiState.emailError?.let { { Text(it) } }
                 )
                 AppTextField(
-                    label = "Celular",
+                    label = stringResource(R.string.phone),
                     value = uiState.phone,
-                    onValueChange = onPhoneChange
+                    onValueChange = onPhoneChange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    isError = uiState.phoneError != null,
+                    supportingText = uiState.phoneError?.let { { Text(it) } }
                 )
                 PasswordTextField(
-                    label = "Senha",
+                    label = stringResource(R.string.password),
                     value = uiState.password,
-                    onValueChange = onPasswordChange
+                    onValueChange = onPasswordChange,
+                    isError = uiState.passwordError != null,
+                    supportingText = uiState.passwordError?.let { { Text(it) } }
                 )
 
-                Spacer(modifier = Modifier.padding(bottom = 50.dp))
+                Spacer(modifier = Modifier.height(50.dp))
                 AppOutlinedButton(
                     onClick = onNextStepClick,
-                    label = "Registrar conta"
+                    label = stringResource(R.string.register_account)
                 )
-                Text(
-                    "Já tenho uma conta",
-                    modifier = Modifier.clickable { onLoginClick() },
-                    textDecoration = TextDecoration.Underline
-                )
+                
+                TextButton(onClick = onLoginClick) {
+                    Text(
+                        stringResource(R.string.already_have_account),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
             }
         }
     }

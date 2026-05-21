@@ -32,6 +32,13 @@ class ChatViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
+    private val _inputText = MutableStateFlow("")
+    val inputText: StateFlow<String> = _inputText.asStateFlow()
+
+    fun updateInputText(text: String) {
+        _inputText.value = text
+    }
+
     private var isListening = false
     private var myUserId: Int? = null
     private var currentPage = 1
@@ -46,9 +53,9 @@ class ChatViewModel @Inject constructor(
     }
 
     fun loadMore() {
+        if (_uiState.value.isLoading) return  // guard
         currentOtherUserId?.let {
-            currentPage++
-            loadHistory(it, currentPage)
+            loadHistory(it, currentPage + 1)
         }
     }
 
@@ -57,6 +64,7 @@ class ChatViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             chatRepository.getHistory(otherUserId, page)
                 .onSuccess { messages ->
+                    currentPage++
                     _uiState.update { currentState ->
                         val merged = (messages + currentState.messages)
                             .distinctBy { it.id }
@@ -97,8 +105,7 @@ class ChatViewModel @Inject constructor(
 
     override fun onCleared() {
         isListening = false
-        // socketManager.disconnect() // Dependendo da arquitetura, desconectar aqui pode matar a conexão de outras telas. 
-        // Em apps modernos o socket costuma seguir o ciclo de vida do usuario autenticado, ou usar eventos de lifecycle para pause/resume da tela.
+        socketManager.disconnect()
         super.onCleared()
     }
 

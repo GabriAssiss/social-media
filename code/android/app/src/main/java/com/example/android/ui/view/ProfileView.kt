@@ -34,14 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android.R
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.viewmodel.ProfileUiState
 import com.example.android.ui.viewmodel.UserSearchUiState
-
-const val GRAY = 0xFFD1D1D1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,15 +52,16 @@ fun ProfileView(
     onLogout: () -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()
-    val nickname = uiState.name.toString()
+    val nickname = uiState.name ?: stringResource(R.string.profile_name_placeholder)
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
                 onQueryChange = {},
                 searchState = UserSearchUiState.Idle,
+                showSearch = false,
                 onUserSelected = {},
                 onLogout = onLogout
             )
@@ -95,35 +96,35 @@ fun ProfileView(
                     modifier = Modifier.padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Bios()
+                    Bios(modifier, uiState)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                ContentBar()
+                ContentBar(modifier, uiState)
             }
         }
     }
 }
 
 @Composable
-fun Bios(modifier: Modifier = Modifier) {
+fun Bios(modifier: Modifier = Modifier, uiState: ProfileUiState) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Text("Bios: texto para se colocar na bios, servindo como placeholder")
+        Text(uiState.bio ?: stringResource(R.string.bio_placeholder))
     }
 }
 
 @Composable
 fun Stats(modifier: Modifier = Modifier, uiState: ProfileUiState) {
 
-    Row {
+    Row(modifier = modifier) {
         Column(
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Seguindo")
+            Text(stringResource(R.string.following))
             Text(uiState.followedCount.toString())
         }
 
@@ -131,7 +132,7 @@ fun Stats(modifier: Modifier = Modifier, uiState: ProfileUiState) {
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Seguidores")
+            Text(stringResource(R.string.followers))
             Text(uiState.followersCount.toString())
         }
 
@@ -139,35 +140,42 @@ fun Stats(modifier: Modifier = Modifier, uiState: ProfileUiState) {
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Posts")
-            Text("0")
+            Text(stringResource(R.string.posts))
+            Text(uiState.postsCount.toString())
         }
-
     }
-
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentBar(modifier: Modifier = Modifier) {
-    val tabs = listOf("Fotos", "Vídeos")
+fun ContentBar(modifier: Modifier = Modifier, uiState: ProfileUiState) {
+    val tabs = listOf(stringResource(R.string.photos), stringResource(R.string.videos))
     val icons = listOf(Icons.Default.Photo, Icons.Default.VideoCameraBack)
     var selectedIndex by remember { mutableIntStateOf(0) }
 
-    SecondaryTabRow(
-        selectedTabIndex = selectedIndex,
-        containerColor = Color(GRAY),
-        divider = {}
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                selected = selectedIndex == index,
-                onClick = { selectedIndex = index },
-                text = { Text(text = title) },
-                icon = { Icon(imageVector = icons[index], contentDescription = null) }
-            )
+    Column(modifier = modifier) {
+        SecondaryTabRow(
+            selectedTabIndex = selectedIndex,
+            containerColor = Color(0xFFD1D1D1),
+            divider = {}
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedIndex == index,
+                    onClick = { selectedIndex = index },
+                    text = { Text(text = title) },
+                    icon = { Icon(imageVector = icons[index], contentDescription = null) }
+                )
+            }
+        }
+        
+        when (selectedIndex) {
+            0 -> Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) { 
+                Text("Grid de Fotos") 
+            }
+            1 -> Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) { 
+                Text("Grid de Vídeos") 
+            }
         }
     }
 }

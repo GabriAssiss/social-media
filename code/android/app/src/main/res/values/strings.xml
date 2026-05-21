@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">android</string>
+    <string name="no_conversations_yet">Nenhuma conversa ainda.</string>
+    <string name="email_or_phone">Email ou Celular</string>
+    <string name="password">Senha</string>
+    <string name="login_loading">Carregando...</string>
+    <string name="login">Entrar</string>
+    <string name="register">Cadastrar</string>
+    <string name="forgot_password">Esqueci a senha...</string>
+    <string name="profile_name_placeholder">Carregando...</string>
+    <string name="bio_placeholder">Bios: texto para se colocar na bios, servindo como placeholder</string>
+    <string name="following">Seguindo</string>
+    <string name="followers">Seguidores</string>
+    <string name="posts">Posts</string>
+    <string name="photos">Fotos</string>
+    <string name="videos">Vídeos</string>
+    <string name="insert_account_info">Insira as informações da conta</string>
+    <string name="name">Nome</string>
+    <string name="email">Email</string>
+    <string name="phone">Celular</string>
+    <string name="register_account">Registrar conta</string>
+    <string name="already_have_account">Já tenho uma conta</string>
 </resources>

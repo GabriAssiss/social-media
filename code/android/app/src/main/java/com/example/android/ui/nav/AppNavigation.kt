@@ -52,8 +52,6 @@ fun AppNavigation() {
         composable(Screen.Auth.route) {
             val viewModel: AuthViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
 
             LaunchedEffect(uiState.token) {
                 if (uiState.token != null) {
@@ -65,12 +63,11 @@ fun AppNavigation() {
 
             AuthView(
                 uiState = uiState,
-                email = email,
-                password = password,
-                onEmailChange = { email = it },
-                onPasswordChange = { password = it },
-                onLoginClick = { viewModel.login(email, password) },
-                onRegisterClick = { navController.navigate(Screen.Register.route) }
+                onEmailChange = { viewModel.updateEmail(it) },
+                onPasswordChange = { viewModel.updatePassword(it) },
+                onLoginClick = { viewModel.login(uiState.email, uiState.password) },
+                onRegisterClick = { navController.navigate(Screen.Register.route) },
+                onForgotPasswordClick = { /* missing logic but implemented */ }
             )
         }
 
@@ -129,10 +126,18 @@ fun AppNavigation() {
             val viewModel: ChatViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val inputText by viewModel.inputText.collectAsStateWithLifecycle()
+
             ChatView(
                 withUserId = userId,
                 uiState = uiState,
-                onSendMessage = { receiverId, text -> viewModel.sendMessage(receiverId, text) },
+                inputText = inputText,
+                onTextChange = { viewModel.updateInputText(it) },
+                onSendMessage = { receiverId, text -> 
+                     viewModel.sendMessage(receiverId, text)
+                     viewModel.updateInputText("")
+                },
                 onInit = { viewModel.init(it) },
                 onLoadMore = { viewModel.loadMore() },
                 onBackClick = { navController.popBackStack() }

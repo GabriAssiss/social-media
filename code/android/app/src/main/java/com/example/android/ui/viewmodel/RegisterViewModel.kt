@@ -18,7 +18,11 @@ data class RegisterUiState(
     val name: String = "",
     val email: String = "",
     val phone: String = "",
-    val password: String = ""
+    val password: String = "",
+    val nameError: String? = null,
+    val emailError: String? = null,
+    val phoneError: String? = null,
+    val passwordError: String? = null
 )
 
 @HiltViewModel

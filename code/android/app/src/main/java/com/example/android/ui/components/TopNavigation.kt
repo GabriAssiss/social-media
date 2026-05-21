@@ -59,6 +59,7 @@ fun AppTopNavigation(
     textFieldState: TextFieldState,
     onQueryChange: (String) -> Unit,
     searchState: UserSearchUiState,
+    showSearch: Boolean = true,
     onUserSelected: (ConversationUserDto) -> Unit,
     onLogout: () -> Unit = {}
 ) {
@@ -106,13 +107,15 @@ fun AppTopNavigation(
                 )
             )
 
-            UserSearchBar(
-                textFieldState = textFieldState,
-                onQueryChange = onQueryChange,
-                searchState = searchState,
-                onUserSelected = onUserSelected,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-            )
+            if (showSearch) {
+                UserSearchBar(
+                    textFieldState = textFieldState,
+                    onQueryChange = onQueryChange,
+                    searchState = searchState,
+                    onUserSelected = onUserSelected,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                )
+            }
         }
     }
 }

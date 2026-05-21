@@ -21,6 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.res.stringResource
+import com.example.android.R
 import androidx.compose.foundation.text.input.TextFieldState
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.components.UserCard
@@ -39,6 +45,13 @@ fun ConversationsView(
     val conversationsState by viewModel.conversationsState.collectAsStateWithLifecycle()
     val searchState by viewModel.searchState.collectAsStateWithLifecycle()
     val textFieldState = rememberTextFieldState()
+
+    LaunchedEffect(textFieldState) {
+        snapshotFlow { textFieldState.text }
+            .collect { query ->
+                viewModel.searchQuery.value = query.toString()
+            }
+    }
 
     ConversationsContent(
         modifier = modifier,
@@ -64,7 +77,7 @@ fun ConversationsContent(
     onLogout: () -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             AppTopNavigation(
                 textFieldState = textFieldState,
@@ -110,17 +123,15 @@ fun ConversationsContent(
                                 .padding(24.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Nenhuma conversa ainda.")
+                            Text(stringResource(R.string.no_conversations_yet))
                         }
                     } else {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .verticalScroll(rememberScrollState())
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            state.conversations.forEach { conversation ->
+                            items(state.conversations) { conversation ->
                                 UserCard(
-                                    modifier = modifier,
+                                    modifier = Modifier,
                                     conversation = conversation,
                                     onChatClick = onChatClick
                                 )

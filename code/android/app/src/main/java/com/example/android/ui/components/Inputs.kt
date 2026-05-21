@@ -24,19 +24,27 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     TextField(
         modifier = modifier.padding(bottom = 50.dp),
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) }
+        label = { Text(label) },
+        keyboardOptions = keyboardOptions,
+        isError = isError,
+        supportingText = supportingText
     )
 }
 
@@ -45,13 +53,20 @@ fun PasswordTextField(
     modifier: Modifier = Modifier,
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     var showPassword by remember { mutableStateOf(false) }
     TextField(
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
+        keyboardOptions = keyboardOptions,
+        isError = isError,
+        supportingText = supportingText,
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = { showPassword = !showPassword }) {

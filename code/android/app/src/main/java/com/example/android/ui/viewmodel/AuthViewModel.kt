@@ -15,6 +15,8 @@ import javax.inject.Inject
 
 
 data class AuthUiState(
+    val email: String = "",
+    val password: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
     val token: String? = null,
@@ -35,6 +37,14 @@ class AuthViewModel @Inject constructor(
         if (token != null) {
             _uiState.update { it.copy(token = token) }
         }
+    }
+
+    fun updateEmail(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun updatePassword(password: String) {
+        _uiState.update { it.copy(password = password) }
     }
 
     fun login(email: String, password: String) {

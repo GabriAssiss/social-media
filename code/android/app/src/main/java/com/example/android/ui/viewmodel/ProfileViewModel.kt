@@ -15,6 +15,8 @@ import javax.inject.Inject
 
 data class ProfileUiState(
     val name: String? = null,
+    val bio: String? = null,
+    val postsCount: Int = 0,
     val error: String? = null,
     val followersCount: Int = 0,
     val followedCount: Int = 0,
