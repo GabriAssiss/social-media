@@ -47,6 +47,7 @@ import com.example.android.R
 import com.example.android.data.dto.MessageDto
 import com.example.android.ui.viewmodel.ChatUiState
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatView(
     modifier: Modifier = Modifier,
@@ -182,6 +183,7 @@ fun ChatBubble(message: MessageDto) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ChatViewPreview() {

@@ -50,7 +50,6 @@ fun RegisterView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AppReturnButton(
-                    modifier = Modifier.align(Alignment.Start), 
                     onClick = onPreviousStepClick
                 )
 
