@@ -12,14 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-// ── UiStates ────────────────────────────────────────────────────────────────
 
 sealed interface ConversationsUiState {
     data object Loading : ConversationsUiState
@@ -39,7 +36,7 @@ sealed interface UserSearchUiState {
 @HiltViewModel
 class ConversationsViewModel @Inject constructor(
     private val chatRepository: ChatRepository,
-    private val userRepository: UserRepository   // repositório de seguidores/seguindo
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _conversationsState = MutableStateFlow<ConversationsUiState>(ConversationsUiState.Loading)
@@ -48,7 +45,6 @@ class ConversationsViewModel @Inject constructor(
     private val _searchState = MutableStateFlow<UserSearchUiState>(UserSearchUiState.Idle)
     val searchState: StateFlow<UserSearchUiState> = _searchState
 
-    /** Texto digitado na barra de busca — exposto para debounce interno */
     val searchQuery = MutableStateFlow("")
 
     init {

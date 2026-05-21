@@ -53,11 +53,9 @@ fun ChatView(
         onInit(withUserId)
     }
 
-    // Scroll automatically ONLY on first load or when sending/receiving near the bottom
     val previousSize = remember { mutableStateOf(0) }
     LaunchedEffect(uiState.messages.size) {
         val newSize = uiState.messages.size
-        // Se a lista cresceu de tamanho e estavámos antes vazios, ou se a ancoragem está no fundo, rola até o final
         if (newSize > previousSize.value && (previousSize.value == 0 || !listState.canScrollForward)) {
             if (newSize > 0) {
                 listState.animateScrollToItem(newSize - 1)
@@ -66,7 +64,6 @@ fun ChatView(
         previousSize.value = newSize
     }
 
-    // Dispara paginação ao chegar no topo da lista
     LaunchedEffect(listState.canScrollBackward) {
         if (!listState.canScrollBackward && uiState.messages.isNotEmpty()) {
             onLoadMore()
