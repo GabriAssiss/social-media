@@ -5,12 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -37,9 +40,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -51,6 +54,43 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.android.R
 import com.example.android.data.dto.ConversationUserDto
 import com.example.android.ui.viewmodel.UserSearchUiState
+
+@Composable
+private fun UserSearchResultItem(
+    user: ConversationUserDto,
+    textFieldState: TextFieldState,
+    onUserSelected: (ConversationUserDto) -> Unit,
+    onClose: () -> Unit
+) {
+    ListItem(
+        leadingContent = {
+            val painter = if (!user.profileUrl.isNullOrEmpty()) {
+                rememberAsyncImagePainter(user.profileUrl)
+            } else {
+                painterResource(id = R.drawable.default_avatar_icon)
+            }
+            ProfileImage(
+                image = painter,
+                modifier = Modifier.size(40.dp)
+            )
+        },
+        headlineContent = {
+            Text(
+                text = user.name,
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        modifier = Modifier
+            .clickable {
+                textFieldState.edit { replace(0, length, user.name) }
+                onClose()
+                onUserSelected(user)
+            }
+            .fillMaxWidth()
+    )
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopNavigation(
@@ -130,11 +170,6 @@ fun UserSearchBar(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-
-    if (searchState is UserSearchUiState.Success && searchState.users.isNotEmpty()) {
-        expanded = true
-    }
-
     Box(modifier.semantics { isTraversalGroup = true }) {
         SearchBar(
             modifier = modifier
@@ -143,19 +178,26 @@ fun UserSearchBar(
             inputField = {
                 SearchBarDefaults.InputField(
                     query = textFieldState.text.toString(),
+                    onExpandedChange = { expanded = it },
                     onQueryChange = { newValue ->
                         textFieldState.edit { replace(0, length, newValue) }
                         onQueryChange(newValue)
-                        if (newValue.isBlank()) expanded = false
+                        if (newValue.isBlank()) {
+                            expanded = true
+                        }
                     },
                     onSearch = { expanded = false },
                     expanded = expanded,
-                    onExpandedChange = { expanded = it },
                     placeholder = { Text(stringResource(R.string.search_placeholder)) }
                 )
             },
             expanded = expanded,
-            onExpandedChange = { expanded = it },
+            onExpandedChange = {
+                expanded = it
+                if (it && textFieldState.text.toString().isBlank()) {
+                    onQueryChange("")
+                }
+            },
         ) {
             when (searchState) {
                 is UserSearchUiState.Loading -> {
@@ -170,54 +212,48 @@ fun UserSearchBar(
                 }
 
                 is UserSearchUiState.Success -> {
-                    Column(Modifier.verticalScroll(rememberScrollState())) {
-                        var recentHeaderShown = false
-                        var otherHeaderShown = false
-                        searchState.users.forEach { user ->
-                            if (user.isRecommended && !recentHeaderShown) {
+                    val recommendedUsers = remember(searchState.users) {
+                        searchState.users.filter { it.isRecommended }
+                    }
+                    val otherUsers = remember(searchState.users) {
+                        searchState.users.filterNot { it.isRecommended }
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier.heightIn(max = 360.dp)
+                    ) {
+                        if (recommendedUsers.isNotEmpty()) {
+                            item {
                                 Text(
-                                    text = stringResource(R.string.recentes_label),
+                                    text = stringResource(R.string.recommended_label),
                                     modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
                                 )
-                                recentHeaderShown = true
                             }
-                            if (!user.isRecommended && !otherHeaderShown) {
+                            items(recommendedUsers, key = { it.id }) { user ->
+                                UserSearchResultItem(
+                                    user = user,
+                                    textFieldState = textFieldState,
+                                    onUserSelected = onUserSelected,
+                                    onClose = { expanded = false }
+                                )
+                            }
+                        }
+
+                        if (otherUsers.isNotEmpty()) {
+                            item {
                                 Text(
                                     text = stringResource(R.string.other_profiles_label),
                                     modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
                                 )
-                                otherHeaderShown = true
                             }
-
-                            ListItem(
-                                leadingContent = {
-                                    // Mini-avatar
-                                    val painter = if (!user.profileUrl.isNullOrEmpty()) {
-                                        rememberAsyncImagePainter(user.profileUrl)
-                                    } else {
-                                        painterResource(id = R.drawable.default_avatar_icon)
-                                    }
-                                    ProfileImage(
-                                        image = painter,
-                                        modifier = Modifier.size(40.dp)
-                                    )
-                                },
-                                headlineContent = {
-                                    Text(
-                                        text = user.name,
-                                        fontSize = 15.sp,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                modifier = Modifier
-                                    .clickable {
-                                        textFieldState.edit { replace(0, length, user.name) }
-                                        expanded = false
-                                        onUserSelected(user)
-                                    }
-                                    .fillMaxWidth()
-                            )
+                            items(otherUsers, key = { it.id }) { user ->
+                                UserSearchResultItem(
+                                    user = user,
+                                    textFieldState = textFieldState,
+                                    onUserSelected = onUserSelected,
+                                    onClose = { expanded = false }
+                                )
+                            }
                         }
                     }
                 }
