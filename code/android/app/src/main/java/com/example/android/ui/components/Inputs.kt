@@ -81,12 +81,13 @@ fun PasswordTextField(
 
 @Composable
 fun ChatTextField(
+    modifier: Modifier = Modifier,
     value: String = "",
     onValueChange: (String) -> Unit = {},
     onSendClick: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {

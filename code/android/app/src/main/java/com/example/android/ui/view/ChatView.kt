@@ -31,6 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.res.painterResource
@@ -88,14 +91,20 @@ fun ChatView(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
-            ChatTextField(
-                value = inputText,
-                onValueChange = onTextChange,
-                onSendClick = {
-                    onSendMessage(withUserId, inputText)
-                }
-            )
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier.navigationBarsPadding()
+            ) {
+                ChatTextField(
+                    modifier = Modifier,
+                    value = inputText,
+                    onValueChange = onTextChange,
+                    onSendClick = {
+                        onSendMessage(withUserId, inputText)
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
