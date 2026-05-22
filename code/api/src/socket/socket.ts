@@ -89,7 +89,8 @@ export function initSocket(server: HttpServer) {
                 })
                 .sort({ createdAt: -1 })
                 .limit(50)
-                .skip((page - 1) * 50);
+                .skip((page - 1) * 50)
+                .lean();
 
                 socket.emit('messages_history', messages.reverse());
             } catch (err) {

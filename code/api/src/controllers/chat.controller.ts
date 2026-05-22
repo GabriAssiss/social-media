@@ -31,7 +31,8 @@ class ChatController {
         })
         .sort({ createdAt: -1 })
         .limit(limitAmount)
-        .skip((page - 1) * limitAmount);
+        .skip((page - 1) * limitAmount)
+        .lean();
 
         return res.status(200).json(messages.reverse());
     }
@@ -66,9 +67,11 @@ class ChatController {
             select: { id: true, name: true, profile_url: true }
         });
 
+        const usersById = new Map(users.map(user => [user.id, user]));
+
         const conversations = lastMessages
             .map(m => ({
-                user: users.find(u => u.id === m._id),
+                user: usersById.get(m._id),
                 lastMessage: m.lastMessage
             }))
             .filter(c => c.user !== undefined)
