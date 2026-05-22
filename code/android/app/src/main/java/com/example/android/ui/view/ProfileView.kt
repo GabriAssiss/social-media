@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -156,7 +157,7 @@ fun ContentBar(modifier: Modifier = Modifier, uiState: ProfileUiState) {
     Column(modifier = modifier) {
         SecondaryTabRow(
             selectedTabIndex = selectedIndex,
-            containerColor = Color(0xFFD1D1D1),
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
             divider = {}
         ) {
             tabs.forEachIndexed { index, title ->
@@ -171,10 +172,10 @@ fun ContentBar(modifier: Modifier = Modifier, uiState: ProfileUiState) {
         
         when (selectedIndex) {
             0 -> Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) { 
-                Text("Grid de Fotos") 
+                Text(stringResource(R.string.photos_grid)) 
             }
             1 -> Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) { 
-                Text("Grid de Vídeos") 
+                Text(stringResource(R.string.videos_grid)) 
             }
         }
     }

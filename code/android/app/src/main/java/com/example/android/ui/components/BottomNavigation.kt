@@ -8,9 +8,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-
-const val GRAY = 0xFFD1D1D1;
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun AppBottomNavigationBar(
@@ -25,7 +23,7 @@ fun AppBottomNavigationBar(
         "adicionar mídia" to Icons.Default.AddCircle
     )
 
-    NavigationBar(containerColor = Color(GRAY)) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
         for (item in navItemMap) {
             NavigationBarItem(
                 selected = currentRoute == item.key,

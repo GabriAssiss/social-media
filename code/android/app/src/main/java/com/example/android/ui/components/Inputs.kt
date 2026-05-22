@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun AppTextField(
@@ -68,14 +69,14 @@ fun PasswordTextField(
         isError = isError,
         supportingText = supportingText,
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            IconButton(onClick = { showPassword = !showPassword }) {
-                Icon(
-                    imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    contentDescription = "Ícone de Visibilidade"
-                )
-            }
-        }
+                trailingIcon = {
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        Icon(
+                            imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = stringResource(R.string.visibility_icon_desc)
+                        )
+                    }
+                }
     )
 }
 
@@ -94,7 +95,7 @@ fun ChatTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Mensagem...") },
+            placeholder = { Text(stringResource(R.string.message_placeholder)) },
             shape = RoundedCornerShape(32.dp),
             leadingIcon = {
                 IconButton(onClick = {}) {
@@ -110,7 +111,7 @@ fun ChatTextField(
                         Icon(Icons.Default.Image, contentDescription = null)
                     }
                     IconButton(onClick = onSendClick) {
-                        Icon(Icons.Default.Send, contentDescription = "Enviar")
+                        Icon(Icons.Default.Send, contentDescription = stringResource(R.string.send))
                     }
                 }
             },

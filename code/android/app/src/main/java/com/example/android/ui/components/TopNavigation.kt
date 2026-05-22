@@ -18,6 +18,8 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -50,7 +52,7 @@ import com.example.android.R
 import com.example.android.data.dto.ConversationUserDto
 import com.example.android.ui.viewmodel.UserSearchUiState
 
-const val GRAY = 0xFFD1D1D1
+// Use Material 3 color tokens instead of file-level constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +68,7 @@ fun AppTopNavigation(
     var menuExpanded by rememberSaveable { mutableStateOf(false) }
 
     Surface(
-        color = Color(GRAY),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         shadowElevation = 2.dp,
     ) {
         Column {
@@ -75,14 +77,14 @@ fun AppTopNavigation(
                 navigationIcon = {
                     Box {
                         IconButton(onClick = { menuExpanded = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "Opções")
+                            Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.options))
                         }
                         DropdownMenu(
                             expanded = menuExpanded,
                             onDismissRequest = { menuExpanded = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Logout") },
+                                text = { Text(stringResource(R.string.logout)) },
                                 onClick = {
                                     menuExpanded = false
                                     onLogout()
@@ -90,7 +92,7 @@ fun AppTopNavigation(
                                 leadingIcon = {
                                     Icon(
                                         Icons.AutoMirrored.Filled.ExitToApp,
-                                        contentDescription = "Logout",
+                                        contentDescription = stringResource(R.string.logout),
                                     )
                                 }
                             )
@@ -99,11 +101,11 @@ fun AppTopNavigation(
                 },
                 actions = {
                     IconButton(onClick = { }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notificações")
+                        Icon(Icons.Default.Notifications, contentDescription = stringResource(R.string.notifications))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(GRAY)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
 
@@ -138,7 +140,7 @@ fun UserSearchBar(
 
     Box(modifier.semantics { isTraversalGroup = true }) {
         SearchBar(
-            modifier = Modifier
+            modifier = modifier
                 .align(Alignment.TopCenter)
                 .semantics { traversalIndex = 0f },
             inputField = {
@@ -152,7 +154,7 @@ fun UserSearchBar(
                     onSearch = { expanded = false },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Buscar seguidores ou seguindo") }
+                    placeholder = { Text(stringResource(R.string.search_placeholder)) }
                 )
             },
             expanded = expanded,
