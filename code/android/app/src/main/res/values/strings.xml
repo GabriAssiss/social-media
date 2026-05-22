@@ -23,7 +23,7 @@
     <string name="message_placeholder">Mensagem...</string>
     <string name="send">Enviar</string>
     <string name="visibility_icon_desc">Ícone de Visibilidade</string>
-    <string name="search_placeholder">Buscar seguidores ou seguindo</string>
+    <string name="search_placeholder">Pesquisar por usuários</string>
     <string name="logout">Logout</string>
     <string name="options">Opções</string>
     <string name="notifications">Notificações</string>
