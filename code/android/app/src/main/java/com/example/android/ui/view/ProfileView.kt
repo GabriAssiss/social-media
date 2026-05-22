@@ -12,9 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.VideoCameraBack
@@ -75,32 +74,35 @@ fun ProfileView(
         }
     ) { innerPadding ->
         Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-                ProfileImage(
-                    image = painterResource(id = R.drawable.default_avatar_icon),
-                    modifier = Modifier.size(100.dp)
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(nickname)
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Stats(modifier, uiState)
+                item {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        ProfileImage(
+                            image = painterResource(id = R.drawable.default_avatar_icon),
+                            modifier = Modifier.size(100.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(nickname)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            modifier = Modifier.padding(20.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Stats(modifier, uiState)
+                        }
+                        Box(
+                            modifier = Modifier.padding(20.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Bios(modifier, uiState)
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                        ContentBar(modifier, uiState)
+                    }
                 }
-                Box(
-                    modifier = Modifier.padding(20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Bios(modifier, uiState)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                ContentBar(modifier, uiState)
             }
         }
     }
