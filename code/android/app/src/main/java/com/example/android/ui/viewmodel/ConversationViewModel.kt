@@ -69,11 +69,7 @@ class ConversationsViewModel @Inject constructor(
             .debounce(300)
             .distinctUntilChanged()
             .onEach { query ->
-                if (query.isBlank()) {
-                    _searchState.update { UserSearchUiState.Idle }
-                } else {
-                    searchUsers(query)
-                }
+                searchUsers(query)
             }
             .launchIn(viewModelScope)
     }

@@ -43,17 +43,21 @@ class ChatViewModel @Inject constructor(
     private var myUserId: Int? = null
     private var currentPage = 1
     private var currentOtherUserId: Int? = null
+    private var hasMoreHistory = true
 
     fun init(withUserId: Int) {
         myUserId = tokenManager.getId()
         currentOtherUserId = withUserId
+        currentPage = 1
+        hasMoreHistory = true
+        _uiState.value = ChatUiState()
         socketManager.connect()
         loadHistory(withUserId)
         listenSocket()
     }
 
     fun loadMore() {
-        if (_uiState.value.isLoading) return  // guard
+        if (_uiState.value.isLoading || !hasMoreHistory) return
         currentOtherUserId?.let {
             loadHistory(it, currentPage + 1)
         }
@@ -64,7 +68,8 @@ class ChatViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             chatRepository.getHistory(otherUserId, page)
                 .onSuccess { messages ->
-                    currentPage++
+                    currentPage = page
+                    hasMoreHistory = messages.size == 50
                     _uiState.update { currentState ->
                         val merged = (messages + currentState.messages)
                             .distinctBy { it.id }

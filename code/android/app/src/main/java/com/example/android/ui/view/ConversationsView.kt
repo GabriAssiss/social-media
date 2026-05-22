@@ -23,8 +23,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.res.stringResource
 import com.example.android.R
 import androidx.compose.foundation.text.input.TextFieldState
@@ -45,13 +43,6 @@ fun ConversationsView(
     val conversationsState by viewModel.conversationsState.collectAsStateWithLifecycle()
     val searchState by viewModel.searchState.collectAsStateWithLifecycle()
     val textFieldState = rememberTextFieldState()
-
-    LaunchedEffect(textFieldState) {
-        snapshotFlow { textFieldState.text }
-            .collect { query ->
-                viewModel.searchQuery.value = query.toString()
-            }
-    }
 
     ConversationsContent(
         modifier = modifier,
