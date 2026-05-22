@@ -51,9 +51,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.android.R
 import com.example.android.data.dto.ConversationUserDto
 import com.example.android.ui.viewmodel.UserSearchUiState
-
-// Use Material 3 color tokens instead of file-level constants
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopNavigation(
@@ -174,7 +171,24 @@ fun UserSearchBar(
 
                 is UserSearchUiState.Success -> {
                     Column(Modifier.verticalScroll(rememberScrollState())) {
+                        var recentHeaderShown = false
+                        var otherHeaderShown = false
                         searchState.users.forEach { user ->
+                            if (user.isRecommended && !recentHeaderShown) {
+                                Text(
+                                    text = stringResource(R.string.recentes_label),
+                                    modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
+                                )
+                                recentHeaderShown = true
+                            }
+                            if (!user.isRecommended && !otherHeaderShown) {
+                                Text(
+                                    text = stringResource(R.string.other_profiles_label),
+                                    modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
+                                )
+                                otherHeaderShown = true
+                            }
+
                             ListItem(
                                 leadingContent = {
                                     // Mini-avatar

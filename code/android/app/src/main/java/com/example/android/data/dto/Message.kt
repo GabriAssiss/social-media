@@ -17,5 +17,6 @@ data class ConversationDto(
 data class ConversationUserDto(
     val id: Int,
     val name: String,
-    val profileUrl: String?
+    val profileUrl: String?,
+    val isRecommended: Boolean = false
 )

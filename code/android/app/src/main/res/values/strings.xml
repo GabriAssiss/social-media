@@ -29,4 +29,6 @@
     <string name="notifications">Notificações</string>
     <string name="photos_grid">Grid de Fotos</string>
     <string name="videos_grid">Grid de Vídeos</string>
+    <string name="recentes_label">Recentes</string>
+    <string name="other_profiles_label">Outros Perfis</string>
 </resources>

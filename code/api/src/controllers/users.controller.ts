@@ -15,6 +15,13 @@ class UserController {
         return res.status(200).json(response);
     }
 
+    async searchConnections(req: Request, res: Response) {
+        const userId = req.user.id;
+        const q = (req.query.q as string) || '';
+        const results = await userService.searchConnections(userId, q);
+        return res.status(200).json(results);
+    }
+
 }
 
 export default new UserController();

@@ -8,5 +8,6 @@ router.use(authMiddleware);
 
 router.get('/me/profile', (req, res) => usersController.myProfile(req, res));
 router.get('/:userId/profile', (req, res) => usersController.profile(req, res));
+router.get('/connections/search', (req, res) => usersController.searchConnections(req, res));
 
 export default router;
