@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "predev": "npx prisma migrate deploy && npx tsx ./prisma/seeds/users.ts && npx tsx ./prisma/seeds/follows.ts",
     "dev": "npx tsx watch src/server.ts"
   },
   "keywords": [],
