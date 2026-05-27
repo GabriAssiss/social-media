@@ -6,13 +6,16 @@ import com.example.android.data.repository.FollowRepository
 import com.example.android.data.repository.UserRepository
 import com.example.android.di.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Immutable
 data class ProfileUiState(
     val name: String? = null,
     val bio: String? = null,
@@ -33,7 +36,7 @@ class ProfileViewModel @Inject constructor(
 
 
     private val _uiState = MutableStateFlow(ProfileUiState())
-    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         getProfile(

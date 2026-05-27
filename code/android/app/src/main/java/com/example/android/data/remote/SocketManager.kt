@@ -6,6 +6,12 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONArray
 import org.json.JSONObject
+import io.socket.emitter.Emitter
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,6 +83,38 @@ class SocketManager @Inject constructor(
             if (args.isNotEmpty()) callback(args[0] as JSONObject)
         }
     }
+
+    fun newMessageFlow(): Flow<JSONObject> = callbackFlow {
+        val listener = Emitter.Listener { args ->
+            if (args.isNotEmpty()) trySend(args[0] as JSONObject)
+        }
+        socket?.on("new_message", listener)
+        awaitClose { socket?.off("new_message", listener) }
+    }.flowOn(Dispatchers.IO)
+
+    fun messageSentFlow(): Flow<JSONObject> = callbackFlow {
+        val listener = Emitter.Listener { args ->
+            if (args.isNotEmpty()) trySend(args[0] as JSONObject)
+        }
+        socket?.on("message_sent", listener)
+        awaitClose { socket?.off("message_sent", listener) }
+    }.flowOn(Dispatchers.IO)
+
+    fun messagesHistoryFlow(): Flow<JSONArray> = callbackFlow {
+        val listener = Emitter.Listener { args ->
+            if (args.isNotEmpty()) trySend(args[0] as JSONArray)
+        }
+        socket?.on("messages_history", listener)
+        awaitClose { socket?.off("messages_history", listener) }
+    }.flowOn(Dispatchers.IO)
+
+    fun messagesReadFlow(): Flow<JSONObject> = callbackFlow {
+        val listener = Emitter.Listener { args ->
+            if (args.isNotEmpty()) trySend(args[0] as JSONObject)
+        }
+        socket?.on("messages_read", listener)
+        awaitClose { socket?.off("messages_read", listener) }
+    }.flowOn(Dispatchers.IO)
 
     fun disconnect() {
         socket?.off()

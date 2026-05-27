@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.data.dto.MessageDto
 import com.example.android.data.remote.SocketManager
+import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.Dispatchers
 import com.example.android.data.repository.ChatRepository
 import com.example.android.di.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
 
+@Immutable
 data class ChatUiState(
     val messages: List<MessageDto> = emptyList(),
     val isLoading: Boolean = false,
@@ -30,7 +32,7 @@ class ChatViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
-    val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
@@ -88,15 +90,15 @@ class ChatViewModel @Inject constructor(
         if (isListening) return
         isListening = true
 
-        socketManager.onNewMessage { json ->
-            viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
+            socketManager.newMessageFlow().collect { json ->
                 val message = parseMessage(json)
                 _uiState.update { it.copy(messages = it.messages + message) }
             }
         }
 
-        socketManager.onMessageSent { json ->
-            viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
+            socketManager.messageSentFlow().collect { json ->
                 val message = parseMessage(json)
                 _uiState.update { it.copy(messages = it.messages + message) }
             }

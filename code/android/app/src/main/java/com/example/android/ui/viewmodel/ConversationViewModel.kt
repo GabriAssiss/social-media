@@ -18,16 +18,27 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.flow.asStateFlow
+
 sealed interface ConversationsUiState {
     data object Loading : ConversationsUiState
+
+    @Immutable
     data class Success(val conversations: List<ConversationDto>) : ConversationsUiState
+
+    @Immutable
     data class Error(val message: String) : ConversationsUiState
 }
 
 sealed interface UserSearchUiState {
     data object Idle : UserSearchUiState
     data object Loading : UserSearchUiState
+
+    @Immutable
     data class Success(val users: List<ConversationUserDto>) : UserSearchUiState
+
+    @Immutable
     data class Error(val message: String) : UserSearchUiState
 }
 
@@ -38,10 +49,10 @@ class ConversationsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _conversationsState = MutableStateFlow<ConversationsUiState>(ConversationsUiState.Loading)
-    val conversationsState: StateFlow<ConversationsUiState> = _conversationsState
+    val conversationsState = _conversationsState.asStateFlow()
 
     private val _searchState = MutableStateFlow<UserSearchUiState>(UserSearchUiState.Idle)
-    val searchState: StateFlow<UserSearchUiState> = _searchState
+    val searchState = _searchState.asStateFlow()
 
     val searchQuery = MutableStateFlow("")
 

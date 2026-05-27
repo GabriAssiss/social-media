@@ -3,6 +3,11 @@ package com.example.android.ui.nav
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +29,10 @@ import com.example.android.ui.viewmodel.AuthViewModel
 import com.example.android.ui.viewmodel.ChatViewModel
 import com.example.android.ui.viewmodel.ProfileViewModel
 import com.example.android.ui.viewmodel.RegisterViewModel
+import com.example.android.ui.viewmodel.AuthUiState
+import com.example.android.ui.viewmodel.ChatUiState
+import com.example.android.ui.viewmodel.ProfileUiState
+import com.example.android.ui.viewmodel.RegisterUiState
 
 sealed class Screen(val route: String) {
     object Auth : Screen("auth")
@@ -40,7 +49,7 @@ sealed class Screen(val route: String) {
 fun AppNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = hiltViewModel()
-    val authUiState by authViewModel.uiState.collectAsStateWithLifecycle()
+    val authUiState by authViewModel.uiState.collectAsStateWithLifecycle(initialValue = AuthUiState())
 
     LaunchedEffect(authUiState.token) {
         if (authUiState.token == null) {
@@ -50,11 +59,18 @@ fun AppNavigation() {
         }
     }
 
-    NavHost(navController = navController, startDestination = Screen.Auth.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Auth.route,
+        enterTransition = { slideInHorizontally(tween(280)) { it } },
+        exitTransition = { fadeOut(tween(150)) },
+        popEnterTransition = { fadeIn(tween(150)) },
+        popExitTransition = { slideOutHorizontally(tween(280)) { it } }
+    ) {
 
         composable(Screen.Auth.route) {
             val viewModel: AuthViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = AuthUiState())
 
             LaunchedEffect(uiState.token) {
                 if (uiState.token != null) {
@@ -76,7 +92,7 @@ fun AppNavigation() {
 
         composable(Screen.Register.route) {
             val viewModel: RegisterViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = RegisterUiState())
 
             LaunchedEffect(uiState.success) {
                 if (uiState.success) navController.navigate(Screen.Auth.route)
@@ -96,7 +112,7 @@ fun AppNavigation() {
 
         composable(Screen.Profile.route) {
             val viewModel: ProfileViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = ProfileUiState())
 
             LaunchedEffect(uiState.isSessionExpired) {
                 if (uiState.isSessionExpired) {
@@ -127,7 +143,7 @@ fun AppNavigation() {
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
             val viewModel: ChatViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = ChatUiState())
             val inputText by viewModel.inputText.collectAsStateWithLifecycle()
 
             ChatView(

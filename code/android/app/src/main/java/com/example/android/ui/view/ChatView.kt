@@ -3,6 +3,7 @@ package com.example.android.ui.view
 import ChatTextField
 import ProfileImage
 import android.os.Build
+import coil.request.CachePolicy
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -108,13 +109,22 @@ fun ChatView(
         }
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
+            val chatBubbleContent = remember {
+                @Composable
+                { message: MessageDto -> ChatBubble(message = message) }
+            }
+
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(uiState.messages, key = { it.id }) { message ->
-                    ChatBubble(message = message)
+                items(
+                    uiState.messages,
+                    key = { it.id },
+                    contentType = { it::class }
+                ) { message ->
+                    chatBubbleContent(message)
                 }
             }
         }
@@ -150,7 +160,9 @@ fun ChatBubble(message: MessageDto) {
                     image = rememberAsyncImagePainter(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data("https://ui-avatars.com/api/?name=User+${message.senderId}&background=random")
-                            .crossfade(true)
+                            .crossfade(300)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .diskCachePolicy(CachePolicy.ENABLED)
                             .build(),
                         placeholder = painterResource(id = R.drawable.default_avatar_icon),
                         error = painterResource(id = R.drawable.default_avatar_icon)

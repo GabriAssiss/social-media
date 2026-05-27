@@ -2,19 +2,17 @@ package com.example.android.ui.view
 
 import AppBottomNavigationBar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +26,7 @@ import com.example.android.R
 import androidx.compose.foundation.text.input.TextFieldState
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.components.UserCard
+import com.example.android.data.dto.ConversationDto
 import com.example.android.ui.viewmodel.ConversationsUiState
 import com.example.android.ui.viewmodel.ConversationsViewModel
 import com.example.android.ui.viewmodel.UserSearchUiState
@@ -40,8 +39,8 @@ fun ConversationsView(
     onChatClick: (Int) -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    val conversationsState by viewModel.conversationsState.collectAsStateWithLifecycle()
-    val searchState by viewModel.searchState.collectAsStateWithLifecycle()
+    val conversationsState by viewModel.conversationsState.collectAsStateWithLifecycle(initialValue = ConversationsUiState.Loading)
+    val searchState by viewModel.searchState.collectAsStateWithLifecycle(initialValue = UserSearchUiState.Idle)
     val textFieldState = rememberTextFieldState()
 
     ConversationsContent(
@@ -67,6 +66,16 @@ fun ConversationsContent(
     onChatClick: (Int) -> Unit,
     onLogout: () -> Unit
 ) {
+    val conversationItemContent = remember(onChatClick) {
+        @Composable { conversation: ConversationDto ->
+            UserCard(
+                modifier = Modifier,
+                conversation = conversation,
+                onChatClick = onChatClick
+            )
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -120,12 +129,12 @@ fun ConversationsContent(
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            items(state.conversations) { conversation ->
-                                UserCard(
-                                    modifier = Modifier,
-                                    conversation = conversation,
-                                    onChatClick = onChatClick
-                                )
+                            items(
+                                items = state.conversations,
+                                key = { it.user.id },
+                                contentType = { it::class }
+                            ) { conversation ->
+                                conversationItemContent(conversation)
                             }
                         }
                     }

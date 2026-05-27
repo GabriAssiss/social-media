@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,11 +37,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -51,6 +56,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.flow.collectLatest
+import androidx.compose.runtime.snapshotFlow
 import com.example.android.R
 import com.example.android.data.dto.ConversationUserDto
 import com.example.android.ui.viewmodel.UserSearchUiState
@@ -169,6 +176,8 @@ fun UserSearchBar(
     modifier: Modifier = Modifier
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    var visibleCount by rememberSaveable { mutableIntStateOf(10) }
 
     Box(modifier.semantics { isTraversalGroup = true }) {
         SearchBar(
@@ -201,6 +210,9 @@ fun UserSearchBar(
         ) {
             when (searchState) {
                 is UserSearchUiState.Loading -> {
+                    LaunchedEffect(searchState) {
+                        visibleCount = 10
+                    }
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -212,46 +224,82 @@ fun UserSearchBar(
                 }
 
                 is UserSearchUiState.Success -> {
-                    val recommendedUsers = remember(searchState.users) {
-                        searchState.users.filter { it.isRecommended }
+                    val onCloseState = rememberUpdatedState({ expanded = false })
+                    LaunchedEffect(searchState.users) {
+                        visibleCount = 10
                     }
-                    val otherUsers = remember(searchState.users) {
-                        searchState.users.filterNot { it.isRecommended }
+
+                    val orderedUsers = remember(searchState.users) {
+                        searchState.users
+                            .filter { it.isRecommended }
+                            .plus(searchState.users.filterNot { it.isRecommended })
+                    }
+                    val visibleUsers = remember(orderedUsers, visibleCount) {
+                        orderedUsers.take(visibleCount.coerceAtMost(orderedUsers.size))
+                    }
+                    val searchRows = remember(visibleUsers) {
+                        buildList {
+                            val recommendedUsers = visibleUsers.filter { it.isRecommended }
+                            val otherUsers = visibleUsers.filterNot { it.isRecommended }
+
+                            if (recommendedUsers.isNotEmpty()) {
+                                add("recommended-header")
+                                addAll(recommendedUsers)
+                            }
+                            if (otherUsers.isNotEmpty()) {
+                                add("other-header")
+                                addAll(otherUsers)
+                            }
+                        }
+                    }
+
+                    LaunchedEffect(listState, searchRows.size, orderedUsers.size) {
+                        snapshotFlow {
+                            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                        }.collectLatest { lastVisibleIndex ->
+                            if (searchRows.isNotEmpty() && lastVisibleIndex >= searchRows.size - 3) {
+                                visibleCount = (visibleCount + 10).coerceAtMost(orderedUsers.size)
+                            }
+                        }
                     }
 
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier.heightIn(max = 360.dp)
                     ) {
-                        if (recommendedUsers.isNotEmpty()) {
-                            item {
-                                Text(
+                        items(
+                            searchRows,
+                            key = { item ->
+                                when (item) {
+                                    is String -> item
+                                    is ConversationUserDto -> "user-${item.id}"
+                                    else -> item.hashCode().toString()
+                                }
+                            },
+                            contentType = { item ->
+                                when (item) {
+                                    is String -> "header"
+                                    is ConversationUserDto -> item::class
+                                    else -> null
+                                }
+                            }
+                        ) { item ->
+                            when (item) {
+                                "recommended-header" -> Text(
                                     text = stringResource(R.string.recommended_label),
                                     modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
                                 )
-                            }
-                            items(recommendedUsers, key = { it.id }) { user ->
-                                UserSearchResultItem(
-                                    user = user,
-                                    textFieldState = textFieldState,
-                                    onUserSelected = onUserSelected,
-                                    onClose = { expanded = false }
-                                )
-                            }
-                        }
 
-                        if (otherUsers.isNotEmpty()) {
-                            item {
-                                Text(
+                                "other-header" -> Text(
                                     text = stringResource(R.string.other_profiles_label),
                                     modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
                                 )
-                            }
-                            items(otherUsers, key = { it.id }) { user ->
-                                UserSearchResultItem(
-                                    user = user,
+
+                                is ConversationUserDto -> UserSearchResultItem(
+                                    user = item,
                                     textFieldState = textFieldState,
                                     onUserSelected = onUserSelected,
-                                    onClose = { expanded = false }
+                                    onClose = onCloseState.value
                                 )
                             }
                         }

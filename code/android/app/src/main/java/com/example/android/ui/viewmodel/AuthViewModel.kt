@@ -2,6 +2,7 @@ package com.example.android.ui.viewmodel
 
 import User
 import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import com.example.android.data.repository.AuthRepository
 import com.example.android.di.TokenManager
@@ -14,6 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+
+@Immutable
 data class AuthUiState(
     val email: String = "",
     val password: String = "",
