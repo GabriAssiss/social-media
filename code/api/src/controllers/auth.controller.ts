@@ -6,40 +6,41 @@ class AuthController {
 
     async create(req: Request, res: Response) {
         const { name, email, password, phone } = req.body;
-        
-        if(!name) {
+
+        if (!name) {
             throw new BadRequestError('Name is required.');
         }
-        if(!password) {
+        if (!password) {
             throw new BadRequestError('Password is required.');
         }
-        if(!email || !phone) {
+        if (!email || !phone) {
             throw new BadRequestError('Email or phone are required.');
         }
 
         const newUser = await userService.create({ name, email, password, phone });
-        return res.status(201).json({ user: {
+        return res.status(201).json({
+            user: {
                 id: newUser.id,
                 name: newUser.name,
                 email: newUser.email,
-                phone: newUser.phone,
-                password: newUser.password
-            } });
+                phone: newUser.phone
+            }
+        });
     }
 
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
-        
-        if(!email) {
+
+        if (!email) {
             throw new BadRequestError('Email is required.');
         }
-        if(!password) {
+        if (!password) {
             throw new BadRequestError('Password is required.');
         }
 
         const response = await userService.login({ email, password });
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             user: {
                 id: response.id,
                 name: response.name,
@@ -47,7 +48,18 @@ class AuthController {
                 phone: response.phone,
             },
             token: response.token
-         });
+        });
+    }
+
+    async updateFcmToken(req: Request, res: Response) {
+        const { fcmToken } = req.body
+
+        if (!fcmToken) {
+            throw new BadRequestError('fcmToken is required.')
+        }
+
+        await userService.updateFcmToken(req.user.id, fcmToken)
+        return res.sendStatus(204)
     }
 
 }

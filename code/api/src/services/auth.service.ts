@@ -37,10 +37,19 @@ class AuthService {
             throw new UnauthorizedError('Invalid password.');
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET ?? "", { expiresIn: process.env.JWT_EXPIRES_IN ?? "1h"} as SignOptions);
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            throw new Error('JWT_SECRET environment variable is not configured');
+        }
+        const expiresIn = process.env.JWT_EXPIRES_IN ?? '1h';
+        const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn } as SignOptions);
         const response = { ...user, token};
         return response;
     }
+
+    async updateFcmToken(userId: number, fcmToken: string) {
+    await UserRepository.updateFcmToken(userId, fcmToken)
+}
 
 
 }

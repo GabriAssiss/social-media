@@ -11,7 +11,7 @@ function buildMongoUri() {
   const dbName = process.env.MONGO_DB_NAME ?? 'mongo_db'
 
   if (!user || !password) {
-    throw new Error('Missing MongoDB credentials in environment variables.')
+    throw new Error('Missing MongoDB credentials: MONGO_USER and MONGO_PASSWORD required in environment variables.')
   }
 
   return `mongodb://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${dbName}?authSource=admin`
@@ -23,4 +23,5 @@ export async function connectMongo() {
   const uri = buildMongoUri()
   await mongoose.connect(uri)
   isConnected = true
+  console.info('MongoDB connected successfully')
 }

@@ -50,7 +50,6 @@ class ProfileViewModel @Inject constructor(
             userRepository.myProfile()
 
                 .onSuccess { response ->
-                    println("DEBUG: $response")
                     _uiState.update {
                         it.copy(name = response.name, followedCount = response.followedCount, followersCount = response.followersCount)
                     }

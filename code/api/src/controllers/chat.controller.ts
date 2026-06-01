@@ -29,12 +29,22 @@ class ChatController {
                 { senderId: otherUserId, receiverId: userId }
             ]
         })
-        .sort({ createdAt: -1 })
-        .limit(limitAmount)
-        .skip((page - 1) * limitAmount)
-        .lean();
+            .sort({ createdAt: -1 })
+            .limit(limitAmount)
+            .skip((page - 1) * limitAmount)
+            .lean();
 
-        return res.status(200).json(messages.reverse());
+        const normalized = messages.reverse().map((msg: any) => ({
+            id: String(msg._id),
+            senderId: msg.senderId,
+            receiverId: msg.receiverId,
+            text: msg.text,
+            image: msg.image,
+            read: msg.read,
+            createdAt: msg.createdAt
+        }));
+
+        return res.status(200).json(normalized);
     }
 
     async getConversations(req: Request, res: Response) {
