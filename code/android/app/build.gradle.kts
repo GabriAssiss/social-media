@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,6 +50,8 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
+    implementation("com.google.firebase:firebase-analytics")
     implementation("io.socket:socket.io-client:2.1.1")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
@@ -56,6 +59,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.dagger:hilt-android:2.51")
     implementation(libs.identity.doctypes.jvm)
+    implementation(libs.firebase.messaging)
     ksp("com.google.dagger:hilt-compiler:2.51")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")

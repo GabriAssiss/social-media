@@ -1,17 +1,16 @@
-package com.example.android.data.remote
+package com.example.android.di
 
 import com.example.android.BuildConfig
-import com.example.android.di.TokenManager
 import io.socket.client.IO
 import io.socket.client.Socket
-import org.json.JSONArray
-import org.json.JSONObject
 import io.socket.emitter.Emitter
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import org.json.JSONArray
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -122,4 +121,3 @@ class SocketManager @Inject constructor(
         socket = null
     }
 }
-

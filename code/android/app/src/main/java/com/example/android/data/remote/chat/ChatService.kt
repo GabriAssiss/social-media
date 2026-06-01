@@ -1,4 +1,4 @@
-package com.example.android.data.remote
+package com.example.android.data.remote.chat
 
 import com.example.android.data.dto.ConversationDto
 import com.example.android.data.dto.MessageDto

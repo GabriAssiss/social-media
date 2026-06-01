@@ -4,14 +4,10 @@ import CreateUserRequest
 import CreateUserResponse
 import LoginRequest
 import LoginResponse
-import com.example.android.data.remote.AuthService
+import com.example.android.data.remote.auth.AuthService
+import com.example.android.domain.repository.AuthRepository
 import javax.inject.Inject
 
-interface AuthRepository {
-    suspend fun create(name: String, email: String, password: String, phone: String) : Result<CreateUserResponse>
-    suspend fun login(email: String, password: String): Result<LoginResponse>
-
-}
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthService

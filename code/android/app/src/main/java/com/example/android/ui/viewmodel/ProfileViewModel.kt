@@ -2,8 +2,8 @@ package com.example.android.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.data.repository.FollowRepository
-import com.example.android.data.repository.UserRepository
+import com.example.android.domain.repository.FollowRepository
+import com.example.android.domain.repository.UserRepository
 import com.example.android.di.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.compose.runtime.Immutable

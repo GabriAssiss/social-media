@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.data.dto.ConversationDto
 import com.example.android.data.dto.ConversationUserDto
-import com.example.android.data.repository.ChatRepository
-import com.example.android.data.repository.UserRepository
+import com.example.android.domain.repository.ChatRepository
+import com.example.android.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "288688149357",
+    "project_id": "social-midia-d24f0",
+    "storage_bucket": "social-midia-d24f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288688149357:android:0f64fa2371577e78280064",
+        "android_client_info": {
+          "package_name": "com.dunk.socialmidia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBm1zogL1AFeLYWVO10XrTDZ-eWkko6FU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.example.android.data.remote
+package com.example.android.data.remote.user
 
 import ProfileResponse
 import com.example.android.data.dto.ConversationUserDto

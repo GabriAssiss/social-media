@@ -3,11 +3,11 @@ package com.example.android.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.data.dto.MessageDto
-import com.example.android.data.remote.SocketManager
+import com.example.android.di.SocketManager
 import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.Dispatchers
-import com.example.android.data.repository.ChatRepository
 import com.example.android.di.TokenManager
+import com.example.android.domain.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

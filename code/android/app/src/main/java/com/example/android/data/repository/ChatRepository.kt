@@ -2,13 +2,10 @@ package com.example.android.data.repository
 
 import com.example.android.data.dto.ConversationDto
 import com.example.android.data.dto.MessageDto
-import com.example.android.data.remote.ChatService
+import com.example.android.data.remote.chat.ChatService
+import com.example.android.domain.repository.ChatRepository
 import javax.inject.Inject
 
-interface ChatRepository {
-    suspend fun getConversations(): Result<List<ConversationDto>>
-    suspend fun getHistory(otherUserId: Int, page: Int = 1): Result<List<MessageDto>>
-}
 
 class ChatRepositoryImpl @Inject constructor(
     private val api: ChatService

@@ -2,13 +2,10 @@ package com.example.android.data.repository
 
 import ProfileResponse
 import com.example.android.data.dto.ConversationUserDto
-import com.example.android.data.remote.UserService
+import com.example.android.data.remote.user.UserService
+import com.example.android.domain.repository.UserRepository
 import javax.inject.Inject
 
-interface UserRepository {
-    suspend fun myProfile() : Result<ProfileResponse>
-    suspend fun searchFollowersAndFollowing(query: String): Result<List<ConversationUserDto>>
-}
 
 class UserRepositoryImpl @Inject constructor(
     val api : UserService

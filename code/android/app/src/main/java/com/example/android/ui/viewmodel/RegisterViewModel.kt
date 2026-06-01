@@ -2,7 +2,7 @@ package com.example.android.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.data.repository.AuthRepository
+import com.example.android.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.MutableStateFlow

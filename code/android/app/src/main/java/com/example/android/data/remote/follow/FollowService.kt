@@ -1,4 +1,4 @@
-package com.example.android.data.remote
+package com.example.android.data.remote.follow
 
 import com.example.android.data.dto.FollowDTO
 import retrofit2.http.Body

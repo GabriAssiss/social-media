@@ -1,4 +1,4 @@
-package com.example.android.data.remote
+package com.example.android.data.remote.auth
 
 import com.example.android.di.TokenManager
 import okhttp3.Interceptor

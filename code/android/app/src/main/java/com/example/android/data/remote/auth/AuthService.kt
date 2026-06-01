@@ -1,4 +1,4 @@
-package com.example.android.data.remote
+package com.example.android.data.remote.auth
 
 import CreateUserRequest
 import CreateUserResponse

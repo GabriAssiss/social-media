@@ -4,8 +4,8 @@ import User
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.example.android.data.repository.AuthRepository
 import com.example.android.di.TokenManager
+import com.example.android.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
