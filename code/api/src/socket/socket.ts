@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { Message } from '../../mongoose/models/message.model.js';
 import usersRepository from "../repositories/users.repository.js";
 import { NotFoundError, UnauthorizedError } from '../utils/api-errors.js';
+import { sendMessageNotification } from '../services/notification.service.js';
 
 const onlineUsers = new Map<number, Set<string>>();
 const messageRateLimits = new Map<number, number>();
@@ -36,14 +37,14 @@ export function initSocket(server: HttpServer) {
         const userId: number = socket.data.user.id;
 
         socket.join(`user_${userId}`);
-        
+
         let userSockets = onlineUsers.get(userId);
         if (!userSockets) {
             userSockets = new Set<string>();
             onlineUsers.set(userId, userSockets);
         }
         userSockets.add(socket.id);
-        
+
         if (userSockets.size === 1) {
             io.emit('user_online', { userId });
         }
@@ -52,7 +53,6 @@ export function initSocket(server: HttpServer) {
         socket.on('send_message', async ({ receiverId, text, image }) => {
             const now = Date.now();
             const lastSent = messageRateLimits.get(userId) || 0;
-            
 
             if (now - lastSent < 500) {
                 return socket.emit('error', { message: 'Aguarde um momento para enviar outra mensagem' });
@@ -65,6 +65,7 @@ export function initSocket(server: HttpServer) {
             if (receiverId === userId) {
                 return socket.emit('error', { message: 'Não pode enviar mensagem para si mesmo' });
             }
+
             try {
                 const receiverExists = await usersRepository.findById(receiverId);
                 if (!receiverExists) {
@@ -74,6 +75,17 @@ export function initSocket(server: HttpServer) {
                 const message = await Message.create({ senderId: userId, receiverId, text, image });
                 io.to(`user_${receiverId}`).emit('new_message', message);
                 socket.emit('message_sent', message);
+
+                const isOnline = onlineUsers.has(receiverId);
+                const fcmToken = (receiverExists as any).fcmToken;
+                if (!isOnline && fcmToken) {
+                    sendMessageNotification({
+                        fcmToken,
+                        senderName: socket.data.user.name,
+                        text: text || (image ? 'Enviou uma imagem' : ''),
+                        receiverId,
+                    }).catch(err => console.error('FCM error:', err));
+                }
             } catch (err) {
                 socket.emit('error', { message: 'Erro ao enviar mensagem' });
             }
@@ -87,10 +99,10 @@ export function initSocket(server: HttpServer) {
                         { senderId: withUserId, receiverId: userId }
                     ]
                 })
-                .sort({ createdAt: -1 })
-                .limit(50)
-                .skip((page - 1) * 50)
-                .lean();
+                    .sort({ createdAt: -1 })
+                    .limit(50)
+                    .skip((page - 1) * 50)
+                    .lean();
 
                 socket.emit('messages_history', messages.reverse());
             } catch (err) {

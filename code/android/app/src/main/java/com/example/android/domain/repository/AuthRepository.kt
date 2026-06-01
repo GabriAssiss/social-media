@@ -6,4 +6,5 @@ import LoginResponse
 interface AuthRepository {
     suspend fun create(name: String, email: String, password: String, phone: String): Result<CreateUserResponse>
     suspend fun login(email: String, password: String): Result<LoginResponse>
+    suspend fun updateFcmToken(token: String): Result<Unit>
 }

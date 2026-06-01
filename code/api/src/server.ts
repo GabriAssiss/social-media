@@ -1,5 +1,6 @@
 import app from './app.js';
 import { connectMongo } from './database/mongoose.client.js';
+import { initializeFirebaseSDK } from './database/firebase.client.js';
 import { createServer } from 'node:http';
 import { initSocket } from './socket/socket.js';
 
@@ -7,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
   await connectMongo();
+  initializeFirebaseSDK();
 
   const server = createServer(app);
   initSocket(server);

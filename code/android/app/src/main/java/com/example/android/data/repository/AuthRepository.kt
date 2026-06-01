@@ -19,5 +19,6 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(email: String, password: String): Result<LoginResponse> =
         runCatching { api.login(LoginRequest(email, password)) }
 
-
+    override suspend fun updateFcmToken(token: String): Result<Unit> =
+        runCatching { api.updateFcmToken(mapOf("fcmToken" to token)) }
 }

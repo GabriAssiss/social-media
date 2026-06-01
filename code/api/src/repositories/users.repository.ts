@@ -67,6 +67,13 @@ class UserRepository {
         });
     }
 
+    async updateFcmToken(id: number, fcmToken: string) {
+    await prisma.user.update({
+        where: { id },
+        data: { fcmToken }
+    })
+}
+
 }
 
 export default new UserRepository();
