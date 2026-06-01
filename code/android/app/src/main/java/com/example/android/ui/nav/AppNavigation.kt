@@ -46,7 +46,7 @@ sealed class Screen(val route: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppNavigation() {
+fun AppNavigation(deepLinkReceiverId: String? = null) {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = hiltViewModel()
     val authUiState by authViewModel.uiState.collectAsStateWithLifecycle(initialValue = AuthUiState())
@@ -55,6 +55,18 @@ fun AppNavigation() {
         if (authUiState.token == null) {
             navController.navigate(Screen.Auth.route) {
                 popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
+    // Processar deep link de notificação FCM
+    LaunchedEffect(deepLinkReceiverId) {
+        if (deepLinkReceiverId != null && authUiState.token != null) {
+            val userId = deepLinkReceiverId.toIntOrNull()
+            if (userId != null) {
+                navController.navigate(Screen.Chat.createRoute(userId)) {
+                    popUpTo(Screen.Messages.route)
+                }
             }
         }
     }

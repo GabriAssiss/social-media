@@ -13,10 +13,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Processar deep link de notificação FCM
+        val receiverId = intent.getStringExtra("receiverId")
+        
         enableEdgeToEdge()
         setContent {
             AndroidTheme {
-                AppNavigation()
+                AppNavigation(deepLinkReceiverId = receiverId)
             }
         }
     }
