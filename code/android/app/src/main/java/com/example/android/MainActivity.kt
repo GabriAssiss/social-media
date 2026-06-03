@@ -1,5 +1,6 @@
 package com.example.android
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,14 +14,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Processar deep link de notificação FCM
+
         val receiverId = intent.getStringExtra("receiverId")
         
         enableEdgeToEdge()
         setContent {
             AndroidTheme {
-                AppNavigation(deepLinkReceiverId = receiverId)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    AppNavigation(deepLinkReceiverId = receiverId)
+                }
             }
         }
     }
