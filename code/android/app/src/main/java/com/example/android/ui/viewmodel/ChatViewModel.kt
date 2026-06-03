@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import com.example.android.di.TokenManager
 import com.example.android.domain.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,13 +34,15 @@ class ChatViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState = _uiState.asStateFlow()
-
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText.asStateFlow()
 
     fun updateInputText(text: String) {
         _inputText.value = text
     }
+
+    private var socketJob: Job? = null
+
 
     private var isListening = false
     private var myUserId: Int? = null
@@ -52,6 +55,7 @@ class ChatViewModel @Inject constructor(
         currentOtherUserId = withUserId
         currentPage = 1
         hasMoreHistory = true
+        isListening = false
         _uiState.value = ChatUiState()
         socketManager.connect()
         loadHistory(withUserId)
@@ -90,14 +94,16 @@ class ChatViewModel @Inject constructor(
         if (isListening) return
         isListening = true
 
-        viewModelScope.launch(Dispatchers.IO) {
+        socketJob?.cancel()
+
+        socketJob = viewModelScope.launch(Dispatchers.IO) {
             socketManager.newMessageFlow().collect { json ->
                 val message = parseMessage(json)
                 _uiState.update { it.copy(messages = it.messages + message) }
             }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        socketJob = viewModelScope.launch(Dispatchers.IO) {
             socketManager.messageSentFlow().collect { json ->
                 val message = parseMessage(json)
                 _uiState.update { it.copy(messages = it.messages + message) }

@@ -4,7 +4,7 @@ data class MessageDto(
     val id: String,
     val text: String,
     val senderId: Int,
-    val isFromMe: Boolean,
+    val isFromMe: Boolean = false,
     val createdAt: String? = null
 )
 

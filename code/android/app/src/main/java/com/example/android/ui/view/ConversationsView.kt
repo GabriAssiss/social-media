@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.res.stringResource
 import com.example.android.R
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.LaunchedEffect
 import com.example.android.ui.components.AppTopNavigation
 import com.example.android.ui.components.UserCard
 import com.example.android.data.dto.ConversationDto
@@ -42,6 +43,10 @@ fun ConversationsView(
     val conversationsState by viewModel.conversationsState.collectAsStateWithLifecycle(initialValue = ConversationsUiState.Loading)
     val searchState by viewModel.searchState.collectAsStateWithLifecycle(initialValue = UserSearchUiState.Idle)
     val textFieldState = rememberTextFieldState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadConversations()
+    }
 
     ConversationsContent(
         modifier = modifier,

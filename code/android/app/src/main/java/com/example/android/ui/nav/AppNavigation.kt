@@ -59,7 +59,6 @@ fun AppNavigation(deepLinkReceiverId: String? = null) {
         }
     }
 
-    // Processar deep link de notificação FCM
     LaunchedEffect(deepLinkReceiverId) {
         if (deepLinkReceiverId != null && authUiState.token != null) {
             val userId = deepLinkReceiverId.toIntOrNull()

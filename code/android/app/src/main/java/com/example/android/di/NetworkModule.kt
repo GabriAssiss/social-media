@@ -72,6 +72,6 @@ class NetworkModule {
         retrofit.create(ChatService::class.java)
 
     @Provides @Singleton
-    fun provideChatRepository(api: ChatService): ChatRepository =
-        ChatRepositoryImpl(api)
+    fun provideChatRepository(api: ChatService, tokenManager: TokenManager): ChatRepository =
+        ChatRepositoryImpl(api, tokenManager)
 }
