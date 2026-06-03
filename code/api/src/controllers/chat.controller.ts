@@ -1,40 +1,24 @@
-import type { Request, Response } from 'express';
-import { Message } from '../../mongoose/models/message.model.js';
-import prisma from '../database/prisma.client.js';
-import { BadRequestError, ServerError, NotFoundError } from '../utils/api-errors.js';
+import type { Request, Response } from 'express'
+import chatRepository from '../repositories/chat.repository.js'
+import { BadRequestError, NotFoundError } from '../utils/api-errors.js'
 
 class ChatController {
 
     async getHistory(req: Request, res: Response) {
-        const userId = req.user.id;
-        const otherUserId = Number(req.params.otherUserId);
-        const page = Number(req.query.page) || 1;
-        const limitAmount = 50;
+        const userId = req.user.id
+        const otherUserId = Number(req.params.otherUserId)
+        const before = req.query.before ? new Date(req.query.before as string) : undefined
 
         if (!otherUserId || isNaN(otherUserId)) {
-            throw new BadRequestError('ID inválido.');
+            throw new BadRequestError('ID inválido.')
         }
 
-        const otherUser = await prisma.user.findUnique({
-            where: { id: otherUserId }
-        });
+        const otherUser = await chatRepository.findUserById(otherUserId)
+        if (!otherUser) throw new NotFoundError('Usuário destinatário não existe.')
 
-        if (!otherUser) {
-            throw new NotFoundError('Usuário destinatário não existe.');
-        }
+        const messages = await chatRepository.findMessages(userId, otherUserId, before)
 
-        const messages = await Message.find({
-            $or: [
-                { senderId: userId, receiverId: otherUserId },
-                { senderId: otherUserId, receiverId: userId }
-            ]
-        })
-            .sort({ createdAt: -1 })
-            .limit(limitAmount)
-            .skip((page - 1) * limitAmount)
-            .lean();
-
-        const normalized = messages.reverse().map((msg: any) => ({
+        const normalized = messages.map((msg: any) => ({
             id: String(msg._id),
             senderId: msg.senderId,
             receiverId: msg.receiverId,
@@ -42,56 +26,33 @@ class ChatController {
             image: msg.image,
             read: msg.read,
             createdAt: msg.createdAt
-        }));
+        }))
 
-        return res.status(200).json(normalized);
+        return res.status(200).json(normalized)
     }
 
     async getConversations(req: Request, res: Response) {
-        const userId = req.user.id;
+        const userId = req.user.id
 
-        const lastMessages = await Message.aggregate([
-            {
-                $match: {
-                    $or: [{ senderId: userId }, { receiverId: userId }]
-                }
-            },
-            { $sort: { createdAt: -1 } },
-            {
-                $group: {
-                    _id: {
-                        $cond: [
-                            { $eq: ['$senderId', userId] },
-                            '$receiverId',
-                            '$senderId'
-                        ]
-                    },
-                    lastMessage: { $first: '$$ROOT' }
-                }
-            }
-        ]);
+        const lastMessages = await chatRepository.findLastMessagesByUser(userId)
+        const userIds = lastMessages.map((m: any) => m._id)
+        const users = await chatRepository.findUsersByIds(userIds)
 
-        const userIds = lastMessages.map(m => m._id);
-        const users = await prisma.user.findMany({
-            where: { id: { in: userIds } },
-            select: { id: true, name: true, profile_url: true }
-        });
-
-        const usersById = new Map(users.map(user => [user.id, user]));
+        const usersById = new Map(users.map(user => [user.id, user]))
 
         const conversations = lastMessages
-            .map(m => ({
+            .map((m: any) => ({
                 user: usersById.get(m._id),
                 lastMessage: m.lastMessage
             }))
-            .filter(c => c.user !== undefined)
-            .sort((a, b) =>
+            .filter((c: any) => c.user !== undefined)
+            .sort((a: any, b: any) =>
                 new Date(b.lastMessage.createdAt).getTime() -
                 new Date(a.lastMessage.createdAt).getTime()
-            ); 
+            )
 
-        return res.status(200).json(conversations);
+        return res.status(200).json(conversations)
     }
 }
 
-export default new ChatController();
+export default new ChatController()
